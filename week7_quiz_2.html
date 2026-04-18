@@ -6,194 +6,97 @@
 <title>Week 7 퀴즈 ② — 통계와 통계학 심화</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f2f4f0;
-  --surface: #ffffff;
-  --surface2: #e8ece4;
-  --border: #d5dace;
-  --text: #141810;
-  --text2: #586054;
-  --text3: #93a08e;
-  --accent: #1a5c2a;
-  --accent-light: #edf5ec;
-  --accent-border: #a8d4ae;
-  --correct: #166534;
-  --correct-bg: #dcfce7;
-  --correct-border: #86efac;
-  --wrong: #991b1b;
-  --wrong-bg: #fee2e2;
-  --wrong-border: #fca5a5;
-  --mono: 'DM Mono', monospace;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-/* ── START SCREEN ── */
-.start-screen {
-  position: fixed; inset: 0; background: var(--text);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 999; padding: 1.5rem;
-}
-.start-box {
-  background: var(--surface); border-radius: 16px;
-  padding: 2.5rem 2rem; width: 100%; max-width: 420px; text-align: center;
-}
-.start-box .s-label { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: .08em; margin-bottom: .5rem; }
-.start-box h2 { font-size: 20px; font-weight: 700; margin-bottom: .375rem; }
-.start-box .s-sub { font-size: 13px; color: var(--text2); margin-bottom: 1.75rem; line-height: 1.6; }
-.start-box .s-meta { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.75rem; }
-.start-box .s-meta span { font-family: var(--mono); font-size: 11px; color: var(--text3); }
-.start-box .s-meta b { color: var(--text); font-weight: 500; }
-.name-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); text-align: left; margin-bottom: .5rem; }
-.name-input {
-  width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
-  padding: .75rem 1rem; font-size: 15px; font-family: 'Noto Sans KR', sans-serif;
-  color: var(--text); background: var(--bg); outline: none;
-  transition: border-color .15s; margin-bottom: .375rem;
-}
-.name-input:focus { border-color: var(--accent); background: var(--surface); }
-.name-error { font-size: 12px; color: var(--wrong); margin-bottom: .875rem; min-height: 18px; text-align: left; }
-.btn-start {
-  width: 100%; background: var(--accent); color: #fff; border: none;
-  border-radius: 9px; padding: .875rem; font-size: 15px; font-weight: 700;
-  font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
-  transition: opacity .15s, transform .1s;
-}
-.btn-start:hover { opacity: .88; }
-.btn-start:active { transform: scale(.98); }
-.submit-status { margin-top: .75rem; font-size: 12px; color: var(--text3); font-family: var(--mono); min-height: 16px; }
-
-.site-header {
-  background: var(--text);
-  color: #fff;
-  padding: 1.375rem 2rem 1.25rem;
-  position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-}
-.site-header .course { font-size: 11px; color: rgba(255,255,255,.45); font-family: var(--mono); letter-spacing: .06em; margin-bottom: 3px; }
-.site-header h1 { font-size: 17px; font-weight: 700; }
-.score-pill { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 20px; padding: .35rem .875rem; font-family: var(--mono); font-size: 13px; white-space: nowrap; flex-shrink: 0; }
-.score-pill span { color: #86efac; font-weight: 500; }
-.progress-wrap { background: rgba(255,255,255,.12); height: 3px; }
-.progress-fill { height: 100%; background: #86efac; transition: width .4s ease; width: 0%; }
-
-.main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
-
-.intro {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: 4px solid var(--accent);
-  border-radius: 14px;
-  padding: 2rem; margin-bottom: 2rem; text-align: center;
-}
-.intro .badge { display: inline-block; background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-border); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: .05em; margin-bottom: .875rem; }
-.intro h2 { font-size: 21px; font-weight: 700; margin-bottom: .5rem; }
-.intro p { font-size: 13px; color: var(--text2); line-height: 1.75; }
-.intro .info-box { background: var(--accent-light); border: 1px solid var(--accent-border); border-radius: 8px; padding: .625rem .875rem; font-size: 12px; color: var(--accent); margin-top: 1rem; line-height: 1.65; }
-.intro .meta-row { display: flex; justify-content: center; gap: 1.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
-.intro .meta-item { font-family: var(--mono); font-size: 12px; color: var(--text3); }
-.intro .meta-item b { color: var(--text); font-weight: 500; }
-
-.q-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 1.125rem; overflow: hidden; transition: box-shadow .2s; }
-.q-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
-.q-header { display: flex; align-items: flex-start; gap: .75rem; padding: 1.125rem 1.25rem .75rem; border-bottom: 1px solid var(--border); }
-.q-num { font-family: var(--mono); font-size: 11px; font-weight: 500; color: #fff; background: var(--accent); border-radius: 6px; padding: 2px 8px; flex-shrink: 0; margin-top: 2px; }
-.q-text { font-size: 14px; font-weight: 500; line-height: 1.6; color: var(--text); flex: 1; }
-.q-tag { margin-left: auto; font-size: 10px; padding: 2px 8px; border-radius: 4px; background: var(--surface2); color: var(--text3); white-space: nowrap; flex-shrink: 0; }
-.difficulty { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; white-space: nowrap; }
-.d-hard   { background: #fee2e2; color: #991b1b; }
-.d-medium { background: #fef3c7; color: #92400e; }
-.d-easy   { background: var(--accent-light); color: var(--accent); }
-
-.options { padding: .75rem 1rem 1rem; display: flex; flex-direction: column; gap: .5rem; }
-.opt { display: flex; align-items: flex-start; gap: .75rem; padding: .75rem .875rem; border-radius: 9px; border: 1.5px solid var(--border); background: var(--surface); cursor: pointer; transition: border-color .15s, background .15s, transform .1s; text-align: left; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text); line-height: 1.55; width: 100%; }
-.opt:hover:not(.disabled) { border-color: var(--accent); background: var(--accent-light); }
-.opt:active:not(.disabled) { transform: scale(.99); }
-.opt-letter { font-family: var(--mono); font-size: 11px; font-weight: 500; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text2); transition: all .15s; margin-top: 1px; }
-.opt.correct { border-color: var(--correct-border); background: var(--correct-bg); cursor: default; }
-.opt.correct .opt-letter { background: var(--correct); border-color: var(--correct); color: #fff; }
-.opt.wrong   { border-color: var(--wrong-border); background: var(--wrong-bg); cursor: default; }
-.opt.wrong   .opt-letter { background: var(--wrong); border-color: var(--wrong); color: #fff; }
-.opt.faded   { opacity: .4; cursor: default; }
-.opt.disabled { cursor: default; }
-.opt-text { flex: 1; }
-
-.feedback { display: none; margin: 0 1rem 1rem; padding: .75rem 1rem; border-radius: 9px; font-size: 13px; line-height: 1.7; }
-.feedback.show { display: block; }
-.feedback.correct-fb { background: var(--correct-bg); border: 1px solid var(--correct-border); color: var(--correct); }
-.feedback.wrong-fb   { background: var(--wrong-bg);   border: 1px solid var(--wrong-border);   color: var(--wrong); }
-.feedback b { font-weight: 700; }
-.feedback .key-point { display: inline-block; background: rgba(0,0,0,.06); border-radius: 4px; padding: 1px 6px; font-family: var(--mono); font-size: 11px; }
-
-.results { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2.5rem 2rem; text-align: center; margin-top: 2rem; }
-.results.show { display: block; }
-.results .big-score { font-size: 64px; font-weight: 700; line-height: 1; color: var(--accent); font-family: var(--mono); margin-bottom: .5rem; }
-.results .score-label { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
-.results .grade { display: inline-block; font-size: 21px; font-weight: 700; padding: .5rem 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; }
-.grade-s { background: #fef9c3; color: #854d0e; }
-.grade-a { background: var(--correct-bg); color: var(--correct); }
-.grade-b { background: var(--accent-light); color: var(--accent); }
-.grade-c { background: var(--wrong-bg); color: var(--wrong); }
-.results .msg { font-size: 14px; color: var(--text2); margin-bottom: 2rem; line-height: 1.75; }
-.results .breakdown { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 2rem; }
-.breakdown-item { background: var(--bg); border-radius: 9px; padding: .875rem; }
-.breakdown-item .bd-num { font-family: var(--mono); font-size: 24px; font-weight: 500; margin-bottom: 2px; }
-.breakdown-item .bd-label { font-size: 11px; color: var(--text3); }
-.bd-correct .bd-num { color: var(--correct); }
-.bd-wrong   .bd-num { color: var(--wrong); }
-.bd-total   .bd-num { color: var(--accent); }
-.btn-row { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
-.btn-reset { background: var(--text); color: #fff; border: none; border-radius: 9px; padding: .875rem 2rem; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; cursor: pointer; transition: opacity .15s, transform .1s; }
-.btn-reset:hover { opacity: .85; }
-.btn-back { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); border-radius: 9px; padding: .875rem 1.5rem; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; }
-.btn-back:hover { background: var(--border); }
-
-.back-link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--text3); text-decoration: none; margin-bottom: 1.5rem; transition: color .15s; }
-.back-link:hover { color: var(--text); }
-
-footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size: 11px; color: var(--text3); }
-
-@media (max-width: 540px) {
-  .site-header h1 { font-size: 14px; }
-  .results .big-score { font-size: 48px; }
-  .results .breakdown { grid-template-columns: 1fr; }
-}
-
-/* NAME OVERLAY */
+:root{--bg:#f2f4f0;--surface:#fff;--surface2:#e8ece4;--border:#d5dace;--text:#141810;--text2:#586054;--text3:#93a08e;--accent:#1a5c2a;--accent-light:#edf5ec;--accent-border:#a8d4ae;--correct:#166534;--correct-bg:#dcfce7;--correct-border:#86efac;--wrong:#991b1b;--wrong-bg:#fee2e2;--wrong-border:#fca5a5;--mono:'DM Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .name-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
-.name-box{background:#fff;border-radius:16px;padding:2.5rem 2rem;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.18)}
-.name-box .nb-course{font-size:11px;color:#a09880;letter-spacing:.06em;margin-bottom:.5rem}
+.name-box{background:#fff;border-radius:16px;padding:2.5rem 2rem;max-width:400px;width:100%;text-align:center}
+.nb-course{font-size:11px;color:#a09880;letter-spacing:.06em;margin-bottom:.5rem;font-family:var(--mono)}
 .name-box h2{font-size:20px;font-weight:700;color:#18160f;margin-bottom:.5rem}
 .name-box p{font-size:13px;color:#6a6355;margin-bottom:1.5rem;line-height:1.65}
-.name-input{width:100%;padding:.875rem 1rem;border:1.5px solid #dbd8d0;border-radius:9px;font-size:15px;font-family:"Noto Sans KR",sans-serif;color:#18160f;outline:none;transition:border-color .15s;margin-bottom:.625rem;text-align:center}
-.name-input:focus{border-color:#1a3a8f}
+.name-input{width:100%;padding:.875rem 1rem;border:1.5px solid #dbd8d0;border-radius:9px;font-size:15px;font-family:'Noto Sans KR',sans-serif;color:#18160f;outline:none;transition:border-color .15s;margin-bottom:.625rem;text-align:center}
+.name-input:focus{border-color:var(--accent)}
 .name-input::placeholder{color:#b0a898}
-.name-start-btn{width:100%;padding:.875rem;background:#18160f;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;font-family:"Noto Sans KR",sans-serif;cursor:pointer;transition:opacity .15s;margin-top:.25rem}
-.name-start-btn:hover{opacity:.85}
 .name-err{font-size:12px;color:#991b1b;margin-bottom:.5rem;display:none}
-.save-status{margin-top:.875rem;padding:.625rem .875rem;border-radius:7px;font-size:12px;display:none}
+.name-start-btn{width:100%;padding:.875rem;background:#18160f;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:opacity .15s;margin-top:.25rem}
+.name-start-btn:hover{opacity:.85}
+.site-header{background:var(--text);color:#fff;padding:1.375rem 2rem 1.25rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.site-header .course{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--mono);letter-spacing:.06em;margin-bottom:3px}
+.site-header h1{font-size:17px;font-weight:700}
+.score-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:.35rem .875rem;font-family:var(--mono);font-size:13px;white-space:nowrap;flex-shrink:0}
+.score-pill span{color:#86efac;font-weight:500}
+.progress-wrap{background:rgba(255,255,255,.12);height:3px}
+.progress-fill{height:100%;background:#86efac;transition:width .4s ease;width:0%}
+.main{max-width:760px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.intro{background:var(--surface);border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:14px;padding:2rem;margin-bottom:2rem;text-align:center}
+.intro .badge{display:inline-block;background:var(--accent-light);color:var(--accent);border:1px solid var(--accent-border);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.05em;margin-bottom:.875rem}
+.intro h2{font-size:21px;font-weight:700;margin-bottom:.5rem}
+.intro p{font-size:13px;color:var(--text2);line-height:1.75}
+.intro .info-box{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:8px;padding:.625rem .875rem;font-size:12px;color:var(--accent);margin-top:1rem;line-height:1.65}
+.intro .meta-row{display:flex;justify-content:center;gap:1.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.intro .meta-item{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.intro .meta-item b{color:var(--text);font-weight:500}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:1.125rem;overflow:hidden;transition:box-shadow .2s}
+.q-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.q-header{display:flex;align-items:flex-start;gap:.75rem;padding:1.125rem 1.25rem .75rem;border-bottom:1px solid var(--border)}
+.q-num{font-family:var(--mono);font-size:11px;font-weight:500;color:#fff;background:var(--accent);border-radius:6px;padding:2px 8px;flex-shrink:0;margin-top:2px}
+.q-text{font-size:14px;font-weight:500;line-height:1.6;color:var(--text);flex:1}
+.q-tag{margin-left:auto;font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface2);color:var(--text3);white-space:nowrap;flex-shrink:0}
+.difficulty{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;flex-shrink:0;white-space:nowrap}
+.d-hard{background:#fee2e2;color:#991b1b}.d-medium{background:#fef3c7;color:#92400e}.d-easy{background:var(--accent-light);color:var(--accent)}
+.options{padding:.75rem 1rem 1rem;display:flex;flex-direction:column;gap:.5rem}
+.opt{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem .875rem;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;text-align:left;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);line-height:1.55;width:100%}
+.opt:hover:not(.disabled){border-color:var(--accent);background:var(--accent-light)}
+.opt:active:not(.disabled){transform:scale(.99)}
+.opt-letter{font-family:var(--mono);font-size:11px;font-weight:500;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text2);transition:all .15s;margin-top:1px}
+.opt-text{flex:1}
+.opt.correct{border-color:var(--correct-border);background:var(--correct-bg);cursor:default}
+.opt.correct .opt-letter{background:var(--correct);border-color:var(--correct);color:#fff}
+.opt.wrong{border-color:var(--wrong-border);background:var(--wrong-bg);cursor:default}
+.opt.wrong .opt-letter{background:var(--wrong);border-color:var(--wrong);color:#fff}
+.opt.faded{opacity:.4;cursor:default}
+.opt.disabled{cursor:default}
+.feedback{display:none;margin:0 1rem 1rem;padding:.75rem 1rem;border-radius:9px;font-size:13px;line-height:1.7}
+.feedback.show{display:block}
+.feedback.correct-fb{background:var(--correct-bg);border:1px solid var(--correct-border);color:var(--correct)}
+.feedback.wrong-fb{background:var(--wrong-bg);border:1px solid var(--wrong-border);color:var(--wrong)}
+.feedback b{font-weight:700}
+.results{display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2.5rem 2rem;text-align:center;margin-top:2rem}
+.results.show{display:block}
+.big-score{font-size:64px;font-weight:700;line-height:1;color:var(--accent);font-family:var(--mono);margin-bottom:.5rem}
+.score-label{font-size:14px;color:var(--text2);margin-bottom:1.5rem}
+.grade{display:inline-block;font-size:21px;font-weight:700;padding:.5rem 1.5rem;border-radius:10px;margin-bottom:1.5rem}
+.grade-s{background:#fef9c3;color:#854d0e}.grade-a{background:var(--correct-bg);color:var(--correct)}.grade-b{background:var(--accent-light);color:var(--accent)}.grade-c{background:var(--wrong-bg);color:var(--wrong)}
+.msg{font-size:14px;color:var(--text2);margin-bottom:2rem;line-height:1.75}
+.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:2rem}
+.breakdown-item{background:var(--bg);border-radius:9px;padding:.875rem}
+.bd-num{font-family:var(--mono);font-size:24px;font-weight:500;margin-bottom:2px}
+.bd-label{font-size:11px;color:var(--text3)}
+.bd-correct .bd-num{color:var(--correct)}.bd-wrong .bd-num{color:var(--wrong)}.bd-total .bd-num{color:var(--accent)}
+.btn-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+.btn-reset{background:var(--text);color:#fff;border:none;border-radius:9px;padding:.875rem 2rem;font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:pointer;transition:opacity .15s}
+.btn-reset:hover{opacity:.85}
+.btn-back{background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:9px;padding:.875rem 1.5rem;font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block}
+.save-status{margin-top:.875rem;padding:.625rem .875rem;border-radius:7px;font-size:13px;display:none}
 .save-status.saving{display:block;background:#fef3c7;color:#92400e}
-.save-status.saved{display:block;background:#dcfce7;color:#166534}
-.save-status.save-err{display:block;background:#fee2e2;color:#991b1b}
-
+.save-status.saved{display:block;background:var(--correct-bg);color:var(--correct)}
+.save-status.save-err{display:block;background:var(--wrong-bg);color:var(--wrong)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--text3);text-decoration:none;margin-bottom:1.5rem;transition:color .15s}
+.back-link:hover{color:var(--text)}
+footer{text-align:center;padding:2rem;font-family:var(--mono);font-size:11px;color:var(--text3)}
+@media(max-width:540px){.site-header h1{font-size:14px}.big-score{font-size:48px}.breakdown{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div class="start-screen" id="startScreen">
-  <div class="start-box">
-    <div class="s-label">지역혁신연구방법론 · WEEK 7 ②</div>
-    <h2>통계와 통계학 심화 퀴즈</h2>
-    <div class="s-sub">1차와 중복 없는 새로운 문제들입니다.<br>시작 전 이름을 입력해 주세요.</div>
-    <div class="s-meta">
-      <span><b>15</b> 문항</span>
-      <span><b>4지선다</b></span>
-      <span>즉시 피드백</span>
-    </div>
-    <label class="name-label" for="nameInput">이름</label>
-    <input class="name-input" id="nameInput" type="text" placeholder="예: 홍길동" maxlength="20" autocomplete="off">
-    <div class="name-error" id="nameError"></div>
-    <button class="btn-start" onclick="startQuiz()">퀴즈 시작 →</button>
+<div class="name-overlay" id="nameOverlay">
+  <div class="name-box">
+    <div class="nb-course">지역혁신연구방법론 · WEEK 7 ②</div>
+    <h2>퀴즈 시작 전<br>이름을 입력하세요</h2>
+    <p>입력한 이름과 점수가 기록됩니다.<br>정확하게 입력해 주세요.</p>
+    <input class="name-input" id="studentName" type="text" placeholder="예) 홍길동" maxlength="20" autocomplete="off">
+    <div class="name-err" id="nameErr">이름을 입력해 주세요.</div>
+    <button class="name-start-btn" id="nameStartBtn" onclick="startQuiz()">퀴즈 시작하기</button>
   </div>
 </div>
 
@@ -208,23 +111,18 @@ footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size:
 
 <main class="main">
   <a href="index.html" class="back-link">← 목차로 돌아가기</a>
-
   <div class="intro">
     <div class="badge">QUIZ · WEEK 7 ② · 심화</div>
     <h2>통계와 통계학 — 두 번째 퀴즈</h2>
     <p>1차 퀴즈와 겹치지 않는 새로운 문제들로 구성했습니다.<br>사례 적용, 시각화 선택, 프로세스 이해를 집중적으로 다룹니다.</p>
-    <div class="info-box">
-      💡 <b>이미 1차 퀴즈를 풀었다면?</b> 이번 문제들은 더 다양한 사례와 응용 문제 중심입니다. 같이 풀면 Week 7 전범위를 완성할 수 있습니다.
-    </div>
+    <div class="info-box">💡 1차 퀴즈를 풀었다면? 이번 문제들은 더 다양한 사례와 응용 문제 중심입니다.</div>
     <div class="meta-row">
       <div class="meta-item"><b>15</b> 문항</div>
       <div class="meta-item"><b>1차와 중복 없음</b></div>
       <div class="meta-item">즉시 피드백</div>
     </div>
   </div>
-
   <div id="quizContainer"></div>
-
   <div class="results" id="results">
     <div class="big-score" id="bigScore">0%</div>
     <div class="score-label" id="scoreLabel"></div>
@@ -232,418 +130,136 @@ footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size:
     <div class="msg" id="resultMsg"></div>
     <div class="breakdown">
       <div class="breakdown-item bd-correct"><div class="bd-num" id="bdCorrect">0</div><div class="bd-label">정답</div></div>
-      <div class="breakdown-item bd-wrong"  ><div class="bd-num" id="bdWrong">0</div>  <div class="bd-label">오답</div></div>
-      <div class="breakdown-item bd-total"  ><div class="bd-num">15</div>               <div class="bd-label">전체</div></div>
+      <div class="breakdown-item bd-wrong"><div class="bd-num" id="bdWrong">0</div><div class="bd-label">오답</div></div>
+      <div class="breakdown-item bd-total"><div class="bd-num">15</div><div class="bd-label">전체</div></div>
     </div>
     <div class="btn-row">
       <button class="btn-reset" onclick="resetQuiz()">다시 풀기</button>
       <a href="week7_quiz.html" class="btn-back">1차 퀴즈로</a>
       <a href="index.html" class="btn-back">목차로</a>
     </div>
-    <div class="submit-status" id="submitStatus"></div>
+    <div class="save-status" id="saveStatus"></div>
   </div>
-
-  <div class="name-overlay" id="nameOverlay">
-    <div class="name-box">
-      <div class="nb-course">지역혁신연구방법론 · Week 7 ②</div>
-      <h2>퀴즈 시작 전<br>이름을 입력하세요</h2>
-      <p>입력한 이름과 점수가 기록됩니다.<br>정확하게 입력해 주세요.</p>
-      <input class="name-input" id="studentName" type="text" placeholder="예) 홍길동" maxlength="20" autocomplete="off">
-      <div class="name-err" id="nameErr">이름을 입력해 주세요.</div>
-      <button class="name-start-btn" onclick="startQuiz()">퀴즈 시작하기</button>
-    </div>
-  </div>
-
 </main>
-
 <footer>지역혁신연구방법론 2026-1 · Week 7 ② · 통계와 통계학 심화</footer>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec_HERE';
-const WEEK_LABEL = 'Week 7 ② 통계와 통계학 심화';
-let studentName = '';
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec";
+var WEEK_ID = "Week7-2";
+var studentName = "";
 
 function startQuiz() {
-  const val = document.getElementById('nameInput').value.trim();
-  if (!val) { document.getElementById('nameError').textContent = '이름을 입력해 주세요.'; document.getElementById('nameInput').focus(); return; }
+  var val = document.getElementById("studentName").value.trim();
+  if (!val) { document.getElementById("nameErr").style.display="block"; document.getElementById("studentName").focus(); return; }
   studentName = val;
-  document.getElementById('startScreen').style.display = 'none';
-  renderQuiz();
+  document.getElementById("nameOverlay").style.display = "none";
 }
-document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('startScreen').style.display !== 'none') startQuiz(); });
+document.getElementById("studentName").addEventListener("keydown", function(e){ if(e.key==="Enter") startQuiz(); });
+document.getElementById("studentName").addEventListener("input", function(){ document.getElementById("nameErr").style.display="none"; });
 
-async function submitResult(pct, correct, total, grade) {
-  if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec_HERE') return;
-  document.getElementById('submitStatus').textContent = '결과 저장 중...';
-  try {
-    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: studentName, week: WEEK_LABEL, pct, correct, total, grade }) });
-    document.getElementById('submitStatus').textContent = '✓ 결과가 저장되었습니다.';
-  } catch { document.getElementById('submitStatus').textContent = '저장 실패 — 네트워크를 확인해 주세요.'; }
-}
-
-const questions = [
-  {
-    tag: "통계학의 목적",
-    diff: "easy",
-    text: "통계학이 '집단 현상'을 분석 대상으로 삼는 이유로 가장 적절한 것은?",
-    opts: [
-      "개인 데이터는 수집하기 어렵기 때문이다",
-      "집단을 통해 일반적 경향과 패턴을 파악할 수 있기 때문이다",
-      "법적으로 개인 데이터 수집이 금지되어 있기 때문이다",
-      "컴퓨터가 집단 데이터만 처리할 수 있기 때문이다"
-    ],
-    answer: 1,
-    fb: "통계학이 집단을 다루는 이유는 <b>일반적 경향과 패턴</b>을 발견하기 위해서입니다. 한 개인의 구매 패턴보다 1만 명의 구매 데이터를 분석해야 '어떤 연령대가 어떤 제품을 선호하는지'라는 의미 있는 정보를 얻을 수 있습니다."
-  },
-  {
-    tag: "문제해결 프로세스",
-    diff: "medium",
-    text: "통계적 문제해결 5단계 중 '3단계: 데이터 정리 및 시각화'에서 하는 핵심 작업은?",
-    opts: [
-      "연구 질문과 가설을 수립한다",
-      "설문조사나 인터뷰를 통해 데이터를 모은다",
-      "결측치·이상치를 제거하고 그래프로 시각화하여 분포와 추세를 파악한다",
-      "통계 검정을 통해 가설이 맞는지 확인한다"
-    ],
-    answer: 2,
-    fb: "<b>3단계(데이터 정리 및 시각화)</b>는 수집한 원자료(raw data)를 분석 가능한 형태로 가공하는 단계입니다. 오류 데이터 제거 후 막대그래프·선그래프·산점도 등으로 시각화하여 데이터의 분포와 추세를 한눈에 파악합니다. 가설 수립은 1단계, 데이터 수집은 2단계입니다."
-  },
-  {
-    tag: "민수 커피숍 사례",
-    diff: "easy",
-    text: "민수가 커피숍 경영 데이터를 분석한 결과 '12월 매출이 가장 높음'을 발견했다. 이 발견의 통계적 의미는?",
-    opts: [
-      "단순한 데이터 수치이며 아무 의미가 없다",
-      "데이터를 분석해 의사결정에 활용 가능한 정보(Information)를 얻은 것이다",
-      "추론통계를 적용해 모집단을 추정한 결과이다",
-      "상관관계 분석을 통해 인과관계를 밝혀낸 것이다"
-    ],
-    answer: 1,
-    fb: "'12월 매출이 가장 높음'은 월별 매출 데이터를 분석해 얻은 <b>의미 있는 정보(Information)</b>입니다. 이 정보로 '12월 마케팅 예산을 늘리자'는 의사결정을 내릴 수 있습니다. 날것의 숫자(데이터)가 분석을 거쳐 의사결정용 지식으로 변환된 것입니다."
-  },
-  {
-    tag: "기술 vs 추론통계",
-    diff: "medium",
-    text: "다음 중 기술통계(Descriptive Statistics)의 사례가 아닌 것은?",
-    opts: [
-      "축제 방문객 3일간 합계: 15,230명",
-      "만족도 설문 평균: 3.8점",
-      "춘천 청년 200명 조사로 강원도 전체 청년의 정착 의향을 추정",
-      "프로그램별 참여자 수를 막대그래프로 표현"
-    ],
-    answer: 2,
-    fb: "'200명 조사 → 강원도 전체 청년 추정'은 <b>추론통계</b>입니다. 표본(일부)에서 모집단(전체)으로 일반화하는 것이 추론통계의 핵심이기 때문입니다. 합계, 평균, 그래프는 모두 있는 데이터를 요약·정리하는 <b>기술통계</b>입니다."
-  },
-  {
-    tag: "모집단 vs 표본",
-    diff: "medium",
-    text: "다음 설명 중 옳은 것은?",
-    opts: [
-      "표본이 클수록 반드시 모집단과 동일해진다",
-      "모집단 전체를 조사하는 것을 '전수조사', 일부를 조사하는 것을 '표본조사'라고 한다",
-      "표본은 반드시 무작위로만 추출해야 한다",
-      "모집단이 클수록 표본도 반드시 커야 한다"
-    ],
-    answer: 1,
-    fb: "<b>전수조사(Census)</b>는 모집단 전체를 조사하는 것이고, <b>표본조사(Sampling)</b>는 일부를 추출해 조사하는 것입니다. 표본이 크다고 모집단과 동일해지지 않고, 대표성이 중요합니다. 표본 추출에는 무작위 외에도 목적 표집, 층화 추출 등 다양한 방법이 있습니다."
-  },
-  {
-    tag: "연속형 데이터 시각화",
-    diff: "medium",
-    text: "춘천시의 월별 평균 기온 변화를 시각화하려 한다. 가장 적절한 차트는?",
-    opts: [
-      "파이차트 — 각 달의 비율을 보여주기 위해",
-      "선 그래프 — 시간의 흐름에 따른 연속적 변화를 보여주기 위해",
-      "막대그래프 — 각 달을 독립적으로 비교하기 위해",
-      "산점도 — 두 변수의 관계를 보기 위해"
-    ],
-    answer: 1,
-    fb: "<b>선 그래프(Line Graph)</b>는 시간의 흐름에 따른 연속적 변화 파악에 최적입니다. 기온은 연속형 데이터이며 월별 추세와 패턴(여름 피크, 겨울 최저 등)을 보는 데 선 그래프가 가장 직관적입니다. 파이차트는 비율, 산점도는 두 변수 간 상관관계 확인에 씁니다."
-  },
-  {
-    tag: "산점도",
-    diff: "hard",
-    text: "\"강원도 월평균 기온(°C)과 관광지 방문객 수의 관계\"를 시각화하려 한다. 가장 적절한 차트는?",
-    opts: [
-      "파이차트",
-      "누적 막대그래프",
-      "산점도 (Scatter Plot)",
-      "도수분포표"
-    ],
-    answer: 2,
-    fb: "<b>산점도(Scatter Plot)</b>는 두 연속형 변수 사이의 상관관계를 확인할 때 사용합니다. x축=기온, y축=방문객 수로 점을 찍으면 '기온이 높을수록 방문객이 많은가?'라는 관계를 한눈에 볼 수 있습니다. 단, 산점도가 상관관계를 보여줄 뿐 인과관계를 증명하지는 않습니다."
-  },
-  {
-    tag: "이산형 데이터 시각화",
-    diff: "medium",
-    text: "축제 프로그램별 참여자 수(이산형 데이터)를 시각화할 때 가장 기본적이고 적절한 방법은?",
-    opts: [
-      "선 그래프 — 추세를 보기 위해",
-      "막대그래프 — 각 프로그램 간 참여자 수를 명확하게 비교하기 위해",
-      "산점도 — 두 변수의 관계를 확인하기 위해",
-      "히스토그램 — 연속형 데이터의 분포를 보기 위해"
-    ],
-    answer: 1,
-    fb: "<b>막대그래프(Bar Chart)</b>는 이산형 데이터의 빈도·합계·비율을 비교하기에 가장 적합합니다. '거리공연 5,200명 vs 체험부스 3,100명'처럼 프로그램 간 차이를 막대 높이로 명확히 보여줍니다. 히스토그램은 비슷하게 생겼지만 연속형 데이터의 구간별 분포에 사용합니다."
-  },
-  {
-    tag: "범주형 시각화",
-    diff: "hard",
-    text: "학년별(1~4학년) 만족도 분포를 비교하려 한다. 각 학년의 '매우 불만족~매우 만족' 응답 비율을 한 차트에 보여주기에 가장 적합한 것은?",
-    opts: [
-      "선 그래프",
-      "단순 막대그래프",
-      "누적 막대그래프 (Stacked Bar Chart)",
-      "파이차트 4개"
-    ],
-    answer: 2,
-    fb: "<b>누적 막대그래프</b>는 순위형 데이터(만족도)와 범주형 데이터(학년)가 함께 있을 때 가장 효과적입니다. 각 막대가 하나의 학년을 나타내고, 막대 안의 색깔 구간이 각 만족도 비율을 보여주어 학년 간 비교가 한눈에 됩니다. 파이차트 4개는 개별 비교는 가능하지만 학년 간 비교가 어렵습니다."
-  },
-  {
-    tag: "상관관계 사례",
-    diff: "hard",
-    text: "연구 결과 '공원 수가 많은 지역일수록 주민 행복도가 높다'는 상관관계가 발견되었다. 이 결과에 대한 올바른 해석은?",
-    opts: [
-      "공원을 늘리면 행복도가 반드시 높아진다는 것이 증명됐다",
-      "두 변수 간 관련성이 있지만, 소득 수준·인프라 등 제3의 변수가 공통 원인일 수 있다",
-      "행복도가 높은 주민들이 공원을 만들기 때문이다",
-      "상관계수가 1이므로 완전한 인과관계가 성립한다"
-    ],
-    answer: 1,
-    fb: "상관관계는 <b>두 변수가 함께 움직인다는 관찰</b>일 뿐, 원인-결과 관계가 아닙니다. '부유한 지역일수록 공원도 많고 행복도도 높다'처럼 소득 수준이라는 제3의 변수가 공통 원인일 수 있습니다. 인과관계를 주장하려면 실험 설계나 추가 통계 분석이 필요합니다."
-  },
-  {
-    tag: "빅데이터 vs 스몰데이터",
-    diff: "medium",
-    text: "팀 프로젝트에서 춘천 청년 200명을 설문 조사했다. 이 데이터의 성격으로 가장 옳은 것은?",
-    opts: [
-      "빅데이터 — 200명은 충분히 많은 데이터이다",
-      "스몰데이터 — 특정 연구 질문에 직접 유용한 목적형 데이터이다",
-      "빅데이터 — SNS와 연동된 데이터이기 때문이다",
-      "이 데이터는 통계 분석에 사용할 수 없다"
-    ],
-    answer: 1,
-    fb: "<b>스몰데이터</b>는 크기는 작지만 특정 문제 해결에 직접적으로 유용한 데이터입니다. 200명 설문은 빅데이터(수백만 건)에는 비할 수 없지만, '춘천 청년 정착 의향'이라는 연구 질문에 직접 답할 수 있는 의미 있는 데이터입니다. 좋은 질문 + 좋은 설계의 스몰데이터는 충분히 가치 있습니다."
-  },
-  {
-    tag: "통계 소프트웨어",
-    diff: "easy",
-    text: "수업에서 데이터 분석 도구로 소개된 Python과 Excel의 차이에 대한 설명으로 옳은 것은?",
-    opts: [
-      "Excel은 코딩이 필요하지만 Python은 클릭으로만 분석한다",
-      "Python은 다양한 목적으로 개발된 언어로 대용량 처리·자동화에 강하며, Excel은 표 기반의 직관적 분석과 시각화에 강하다",
-      "Excel은 무조건 Python보다 정확한 결과를 낸다",
-      "Python은 통계 전용 언어이므로 다른 용도로는 사용할 수 없다"
-    ],
-    answer: 1,
-    fb: "<b>Python</b>은 다양한 목적으로 개발된 범용 언어로 대용량 데이터 처리, 자동화, 머신러닝까지 가능합니다. <b>Excel</b>은 표 형식의 직관적 데이터 입력·조건부서식·피벗테이블·차트 작성에 강합니다. 둘은 대체재가 아니라 보완재로 함께 쓸 수 있습니다."
-  },
-  {
-    tag: "데이터 정보 변환",
-    diff: "medium",
-    text: "민지(춘천시 축제 담당)가 화장실 불편 호소 45건, 주차 불편 38건 데이터를 분석한 뒤 '편의시설 개선이 최우선 과제'라고 결론 내렸다. 이 과정에서 통계학의 어떤 역할이 드러나는가?",
-    opts: [
-      "데이터를 많이 수집하는 역할",
-      "데이터를 보기 좋게 색칠하는 역할",
-      "날것의 데이터를 의사결정에 활용 가능한 정보로 변환하는 역할",
-      "결론을 미리 정해두고 그에 맞는 데이터를 찾는 역할"
-    ],
-    answer: 2,
-    fb: "이것이 통계학의 핵심 역할입니다. '화장실 45건, 주차 38건'이라는 날것의 숫자(데이터)가 분석을 거쳐 <b>'편의시설 개선이 최우선'이라는 정보</b>로 변환됩니다. 그리고 이 정보를 바탕으로 '이동식 화장실 증설'이라는 <b>의사결정</b>으로 이어집니다. 데이터 → 정보 → 의사결정의 흐름이 통계학의 목적입니다."
-  },
-  {
-    tag: "표본의 대표성",
-    diff: "hard",
-    text: "강원도 청년 정착 의향 연구에서 '한림대학교 재학생 200명'만 설문했다. 이 표본의 가장 큰 문제는?",
-    opts: [
-      "표본 크기가 200명으로 너무 작다",
-      "대학생만으로 구성되어 취업 청년·직장인 등을 포함하지 못해 모집단을 대표하지 못한다",
-      "설문 문항이 너무 많다",
-      "강원도가 아닌 춘천에서만 조사했기 때문이다"
-    ],
-    answer: 1,
-    fb: "표본은 <b>모집단을 잘 대표</b>해야 합니다. 모집단이 '강원도 청년 전체'인데, 한 대학교 재학생만 조사하면 취업 청년, 귀농청년, 직장인 등이 완전히 빠집니다. 이를 <b>표본 편향(Sampling Bias)</b>이라 하며, 아무리 분석을 잘해도 결론을 모집단에 일반화할 수 없습니다."
-  },
-  {
-    tag: "통계적 사고 종합",
-    diff: "hard",
-    text: "다음 중 통계적 사고(Statistical Thinking)를 가장 잘 보여주는 행동은?",
-    opts: [
-      "유명 유튜버가 추천한 방법이라 바로 따랐다",
-      "경험이 많은 선배의 조언만 믿고 결정했다",
-      "직감적으로 좋아 보이는 옵션을 골랐다",
-      "데이터를 수집·분석해 패턴을 확인한 뒤, 근거를 바탕으로 합리적 결론을 내렸다"
-    ],
-    answer: 3,
-    fb: "<b>통계적 사고</b>의 핵심은 '직관이나 권위가 아닌 데이터와 근거에 기반한 의사결정'입니다. 유명인 추천·선배 조언·직감은 모두 데이터 기반이 아닙니다. 통계적 사고는 ①질문 → ②데이터 수집 → ③분석 → ④근거 기반 결론의 흐름을 따릅니다. 이것이 이 수업에서 배우는 가장 핵심적인 태도입니다."
-  }
+var questions = [
+  {tag:"통계학의 목적",diff:"easy",text:"통계학이 '집단 현상'을 분석 대상으로 삼는 이유로 가장 적절한 것은?",opts:["개인 데이터는 수집하기 어렵기 때문이다","집단을 통해 일반적 경향과 패턴을 파악할 수 있기 때문이다","법적으로 개인 데이터 수집이 금지되어 있기 때문이다","컴퓨터가 집단 데이터만 처리할 수 있기 때문이다"],answer:1,fb:"통계학이 집단을 다루는 이유는 <b>일반적 경향과 패턴</b>을 발견하기 위해서입니다."},
+  {tag:"문제해결 프로세스",diff:"medium",text:"통계적 문제해결 5단계 중 '3단계: 데이터 정리 및 시각화'에서 하는 핵심 작업은?",opts:["연구 질문과 가설을 수립한다","설문조사나 인터뷰를 통해 데이터를 모은다","결측치·이상치를 제거하고 그래프로 시각화하여 분포와 추세를 파악한다","통계 검정을 통해 가설이 맞는지 확인한다"],answer:2,fb:"<b>3단계</b>는 원자료를 분석 가능한 형태로 가공하는 단계입니다. 가설 수립은 1단계, 데이터 수집은 2단계입니다."},
+  {tag:"민수 커피숍 사례",diff:"easy",text:"민수가 '12월 매출이 가장 높음'을 발견했다. 이 발견의 통계적 의미는?",opts:["단순한 수치이며 아무 의미가 없다","데이터를 분석해 의사결정에 활용 가능한 정보(Information)를 얻은 것이다","추론통계를 적용해 모집단을 추정한 결과이다","상관관계 분석을 통해 인과관계를 밝혀낸 것이다"],answer:1,fb:"날것의 숫자(데이터)가 분석을 거쳐 <b>의미 있는 정보(Information)</b>로 변환된 것입니다."},
+  {tag:"기술 vs 추론통계",diff:"medium",text:"다음 중 기술통계(Descriptive Statistics)의 사례가 아닌 것은?",opts:["축제 방문객 3일간 합계: 15,230명","만족도 설문 평균: 3.8점","춘천 청년 200명 조사로 강원도 전체 청년의 정착 의향을 추정","프로그램별 참여자 수를 막대그래프로 표현"],answer:2,fb:"'200명 조사 → 강원도 전체 청년 추정'은 <b>추론통계</b>입니다. 나머지는 모두 데이터를 정리하는 기술통계입니다."},
+  {tag:"모집단 vs 표본",diff:"medium",text:"다음 설명 중 옳은 것은?",opts:["표본이 클수록 반드시 모집단과 동일해진다","모집단 전체를 조사하는 것을 전수조사, 일부를 조사하는 것을 표본조사라고 한다","표본은 반드시 무작위로만 추출해야 한다","모집단이 클수록 표본도 반드시 커야 한다"],answer:1,fb:"<b>전수조사</b>는 모집단 전체, <b>표본조사</b>는 일부를 추출해 조사하는 것입니다."},
+  {tag:"연속형 데이터 시각화",diff:"medium",text:"춘천시의 월별 평균 기온 변화를 시각화하려 한다. 가장 적절한 차트는?",opts:["파이차트 — 각 달의 비율을 보여주기 위해","선 그래프 — 시간의 흐름에 따른 연속적 변화를 보여주기 위해","막대그래프 — 각 달을 독립적으로 비교하기 위해","산점도 — 두 변수의 관계를 보기 위해"],answer:1,fb:"<b>선 그래프(Line Graph)</b>는 시간의 흐름에 따른 연속적 변화 파악에 최적입니다."},
+  {tag:"산점도",diff:"hard",text:"\"강원도 월평균 기온과 관광지 방문객 수의 관계\"를 시각화하려 한다. 가장 적절한 차트는?",opts:["파이차트","누적 막대그래프","산점도 (Scatter Plot)","도수분포표"],answer:2,fb:"<b>산점도</b>는 두 연속형 변수 사이의 상관관계를 확인할 때 사용합니다."},
+  {tag:"이산형 데이터 시각화",diff:"medium",text:"축제 프로그램별 참여자 수를 시각화할 때 가장 기본적이고 적절한 방법은?",opts:["선 그래프 — 추세를 보기 위해","막대그래프 — 각 프로그램 간 참여자 수를 명확하게 비교하기 위해","산점도 — 두 변수의 관계를 확인하기 위해","히스토그램 — 연속형 데이터의 분포를 보기 위해"],answer:1,fb:"<b>막대그래프(Bar Chart)</b>는 이산형 데이터의 빈도·합계·비율을 비교하기에 가장 적합합니다."},
+  {tag:"범주형 시각화",diff:"hard",text:"학년별 만족도 분포를 비교하려 한다. 각 학년의 '매우 불만족~매우 만족' 응답 비율을 한 차트에 보여주기에 가장 적합한 것은?",opts:["선 그래프","단순 막대그래프","누적 막대그래프 (Stacked Bar Chart)","파이차트 4개"],answer:2,fb:"<b>누적 막대그래프</b>는 순위형 데이터(만족도)와 범주형 데이터(학년)가 함께 있을 때 가장 효과적입니다."},
+  {tag:"상관관계 사례",diff:"hard",text:"'공원 수가 많은 지역일수록 주민 행복도가 높다'는 상관관계에 대한 올바른 해석은?",opts:["공원을 늘리면 행복도가 반드시 높아진다","두 변수 간 관련성이 있지만 소득 수준 등 제3의 변수가 공통 원인일 수 있다","행복도가 높은 주민들이 공원을 만들기 때문이다","상관계수가 1이므로 완전한 인과관계가 성립한다"],answer:1,fb:"상관관계는 <b>두 변수가 함께 움직인다는 관찰</b>일 뿐, 원인-결과 관계가 아닙니다."},
+  {tag:"빅데이터 vs 스몰데이터",diff:"medium",text:"팀 프로젝트에서 춘천 청년 200명을 설문 조사했다. 이 데이터의 성격으로 가장 옳은 것은?",opts:["빅데이터 — 200명은 충분히 많은 데이터이다","스몰데이터 — 특정 연구 질문에 직접 유용한 목적형 데이터이다","빅데이터 — SNS와 연동된 데이터이기 때문이다","통계 분석에 사용할 수 없다"],answer:1,fb:"<b>스몰데이터</b>는 크기는 작지만 특정 문제 해결에 직접적으로 유용한 데이터입니다. 좋은 질문 + 좋은 설계의 스몰데이터는 충분히 가치 있습니다."},
+  {tag:"통계 소프트웨어",diff:"easy",text:"Python과 Excel의 차이에 대한 설명으로 옳은 것은?",opts:["Excel은 코딩이 필요하지만 Python은 클릭으로만 분석한다","Python은 대용량 처리·자동화에 강하며, Excel은 표 기반 직관적 분석과 시각화에 강하다","Excel은 무조건 Python보다 정확하다","Python은 통계 전용 언어이므로 다른 용도로는 사용할 수 없다"],answer:1,fb:"<b>Python</b>은 대용량·자동화·머신러닝에 강하고, <b>Excel</b>은 표 형식의 직관적 분석에 강합니다. 둘은 보완재입니다."},
+  {tag:"데이터 정보 변환",diff:"medium",text:"민지가 화장실 불편 45건, 주차 불편 38건 데이터를 분석 후 '편의시설 개선이 최우선 과제'라고 결론 내렸다. 이 과정에서 통계학의 어떤 역할이 드러나는가?",opts:["데이터를 많이 수집하는 역할","데이터를 보기 좋게 색칠하는 역할","날것의 데이터를 의사결정에 활용 가능한 정보로 변환하는 역할","결론을 미리 정해두고 그에 맞는 데이터를 찾는 역할"],answer:2,fb:"이것이 통계학의 핵심 역할입니다. 날것의 숫자(데이터) → 분석 → <b>정보</b> → <b>의사결정</b>의 흐름입니다."},
+  {tag:"표본의 대표성",diff:"hard",text:"강원도 청년 정착 의향 연구에서 '한림대학교 재학생 200명'만 설문했다. 이 표본의 가장 큰 문제는?",opts:["표본 크기가 200명으로 너무 작다","대학생만으로 구성되어 취업 청년·직장인 등을 포함하지 못해 모집단을 대표하지 못한다","설문 문항이 너무 많다","강원도가 아닌 춘천에서만 조사했기 때문이다"],answer:1,fb:"표본은 <b>모집단을 잘 대표</b>해야 합니다. 한 대학교 재학생만 조사하면 취업 청년 등이 빠지는 <b>표본 편향(Sampling Bias)</b>이 발생합니다."},
+  {tag:"통계적 사고 종합",diff:"hard",text:"다음 중 통계적 사고(Statistical Thinking)를 가장 잘 보여주는 행동은?",opts:["유명 유튜버가 추천한 방법이라 바로 따랐다","경험이 많은 선배의 조언만 믿고 결정했다","직감적으로 좋아 보이는 옵션을 골랐다","데이터를 수집·분석해 패턴을 확인한 뒤 근거를 바탕으로 합리적 결론을 내렸다"],answer:3,fb:"<b>통계적 사고</b>의 핵심은 '직관이나 권위가 아닌 데이터와 근거에 기반한 의사결정'입니다."}
 ];
 
-let answered = new Array(questions.length).fill(false);
-let correctCount = 0;
-const letters = ['①', '②', '③', '④'];
+var answered = new Array(questions.length).fill(false);
+var correctCount = 0;
+var letters = ['①','②','③','④'];
+var diffMap = {hard:'<span class="difficulty d-hard">★ 심화</span>',medium:'<span class="difficulty d-medium">응용</span>',easy:'<span class="difficulty d-easy">기본</span>'};
 
 function renderQuiz() {
-  const container = document.getElementById('quizContainer');
-  container.innerHTML = '';
-  questions.forEach((q, qi) => {
-    const card = document.createElement('div');
-    card.className = 'q-card';
-    card.id = `q${qi}`;
-
-    const diffMap = { hard: '<span class="difficulty d-hard">★ 심화</span>', medium: '<span class="difficulty d-medium">응용</span>', easy: '<span class="difficulty d-easy">기본</span>' };
-
-    const header = document.createElement('div');
-    header.className = 'q-header';
-    header.innerHTML = `<span class="q-num">Q${qi + 1}</span><span class="q-text">${q.text}</span><span class="q-tag">${q.tag}</span>${diffMap[q.diff]}`;
-    card.appendChild(header);
-
-    const opts = document.createElement('div');
-    opts.className = 'options';
-    q.opts.forEach((opt, oi) => {
-      const btn = document.createElement('button');
-      btn.className = 'opt';
-      btn.innerHTML = `<span class="opt-letter">${letters[oi]}</span><span class="opt-text">${opt}</span>`;
-      btn.addEventListener('click', () => selectAnswer(qi, oi));
+  var c = document.getElementById('quizContainer'); c.innerHTML = '';
+  questions.forEach(function(q, qi) {
+    var card = document.createElement('div'); card.className='q-card'; card.id='q'+qi;
+    var hdr = document.createElement('div'); hdr.className='q-header';
+    hdr.innerHTML = '<span class="q-num">Q'+(qi+1)+'</span><span class="q-text">'+q.text+'</span><span class="q-tag">'+q.tag+'</span>'+(diffMap[q.diff]||'');
+    card.appendChild(hdr);
+    var opts = document.createElement('div'); opts.className='options';
+    q.opts.forEach(function(opt, oi) {
+      var btn = document.createElement('button'); btn.className='opt';
+      btn.innerHTML='<span class="opt-letter">'+letters[oi]+'</span><span class="opt-text">'+opt+'</span>';
+      btn.addEventListener('click',(function(qi,oi){return function(){selectAnswer(qi,oi);};})(qi,oi));
       opts.appendChild(btn);
     });
     card.appendChild(opts);
-
-    const fb = document.createElement('div');
-    fb.className = 'feedback';
-    fb.id = `fb${qi}`;
-    card.appendChild(fb);
-
-    container.appendChild(card);
+    var fb=document.createElement('div'); fb.className='feedback'; fb.id='fb'+qi;
+    card.appendChild(fb); c.appendChild(card);
   });
   updateScore();
 }
 
 function selectAnswer(qi, oi) {
-  if (answered[qi]) return;
-  answered[qi] = true;
-  const q = questions[qi];
-  const fbEl = document.getElementById(`fb${qi}`);
-  document.querySelectorAll(`#q${qi} .opt`).forEach((btn, idx) => {
-    btn.classList.add('disabled');
-    if (idx === q.answer) btn.classList.add('correct');
-    else if (idx === oi) btn.classList.add('wrong');
-    else btn.classList.add('faded');
+  if (answered[qi]) return; answered[qi]=true;
+  var q=questions[qi];
+  document.querySelectorAll('#q'+qi+' .opt').forEach(function(b,idx){
+    b.classList.add('disabled');
+    if(idx===q.answer) b.classList.add('correct');
+    else if(idx===oi) b.classList.add('wrong');
+    else b.classList.add('faded');
   });
-  const isCorrect = oi === q.answer;
-  if (isCorrect) correctCount++;
-  fbEl.className = `feedback show ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
-  fbEl.innerHTML = isCorrect
-    ? `✅ <b>정답!</b> ${q.fb}`
-    : `❌ <b>오답.</b> 정답은 <span class="key-point">${letters[q.answer]}</span>입니다. ${q.fb}`;
+  var ok=oi===q.answer; if(ok) correctCount++;
+  var fb=document.getElementById('fb'+qi);
+  fb.className='feedback show '+(ok?'correct-fb':'wrong-fb');
+  fb.innerHTML=ok?'✅ <b>정답!</b> '+q.fb:'❌ <b>오답.</b> 정답은 '+letters[q.answer]+'입니다. '+q.fb;
   updateScore();
-  if (answered.filter(Boolean).length === questions.length) setTimeout(showResults, 600);
+  if(answered.filter(Boolean).length===questions.length) setTimeout(showResults,600);
 }
 
 function updateScore() {
-  const done = answered.filter(Boolean).length;
-  document.getElementById('scoreDisplay').textContent = correctCount;
-  document.getElementById('totalDisplay').textContent = done;
-  document.getElementById('progressBar').style.width = (done / questions.length * 100) + '%';
+  var done=answered.filter(Boolean).length;
+  document.getElementById('scoreDisplay').textContent=correctCount;
+  document.getElementById('totalDisplay').textContent=done;
+  document.getElementById('progressBar').style.width=(done/questions.length*100)+'%';
 }
 
 function showResults() {
-  const pct = Math.round(correctCount / questions.length * 100);
-  document.getElementById('bigScore').textContent = pct + '%';
-  document.getElementById('scoreLabel').textContent = `${questions.length}문항 중 ${correctCount}개 정답`;
-  document.getElementById('bdCorrect').textContent = correctCount;
-  document.getElementById('bdWrong').textContent = questions.length - correctCount;
-  let grade, gradeClass, msg;
-  if (pct >= 93)      { grade = '🏆 S등급'; gradeClass = 'grade-s'; msg = '완벽합니다! Week 7 전 범위를 완전히 이해했습니다. Week 8 퀴즈도 도전해 보세요!'; }
-  else if (pct >= 80) { grade = '✅ A등급'; gradeClass = 'grade-a'; msg = '훌륭해요! 틀린 문항의 해설을 한 번 더 읽고 Week 8 퀴즈로 넘어가세요.'; }
-  else if (pct >= 60) { grade = '📘 B등급'; gradeClass = 'grade-b'; msg = '기본 개념은 잡혔습니다. 시각화 선택 원칙과 상관관계≠인과관계 부분을 다시 복습해 보세요.'; }
-  else                { grade = '📖 복습 후 재도전'; gradeClass = 'grade-c'; msg = '1차 퀴즈(week7_quiz.html)와 핵심 용어 정리를 다시 읽고 재도전해 보세요!'; }
-  document.getElementById('gradeBox').textContent = grade;
-  document.getElementById('gradeBox').className = `grade ${gradeClass}`;
-  document.getElementById('resultMsg').textContent = msg;
-  const el = document.getElementById('results');
-  el.classList.add('show');
-  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-  submitResult(pct, correctCount, questions.length, grade);
+  var pct=Math.round(correctCount/questions.length*100);
+  document.getElementById('bigScore').textContent=pct+'%';
+  document.getElementById('scoreLabel').textContent=questions.length+'문항 중 '+correctCount+'개 정답';
+  document.getElementById('bdCorrect').textContent=correctCount;
+  document.getElementById('bdWrong').textContent=questions.length-correctCount;
+  var g,gc,msg;
+  if(pct>=93){g='🏆 S등급';gc='grade-s';msg='완벽합니다! Week 7 전 범위를 완전히 이해했습니다.';}
+  else if(pct>=80){g='✅ A등급';gc='grade-a';msg='훌륭해요! 틀린 문항의 해설을 한 번 더 읽어 보세요.';}
+  else if(pct>=60){g='📘 B등급';gc='grade-b';msg='기본 개념은 잡혔습니다. 시각화 선택 원칙과 상관관계≠인과관계를 다시 복습해 보세요.';}
+  else{g='📖 복습 후 재도전';gc='grade-c';msg='1차 퀴즈와 핵심 용어 정리를 다시 읽고 재도전해 보세요!';}
+  var ge=document.getElementById('gradeBox'); ge.textContent=g; ge.className='grade '+gc;
+  document.getElementById('resultMsg').textContent=msg;
+  document.getElementById('results').classList.add('show');
+  setTimeout(function(){document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});},100);
+  submitResult(pct, g);
+}
+
+function submitResult(pct, grade) {
+  var s=document.getElementById('saveStatus');
+  s.className='save-status saving'; s.textContent='⏳ 결과 저장 중...';
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name:studentName,week:WEEK_ID,correct:correctCount,total:questions.length,pct:pct,grade:grade})
+  }).then(function(){s.className='save-status saved';s.textContent='✅ '+studentName+'님의 결과가 저장되었습니다.';})
+    .catch(function(){s.className='save-status save-err';s.textContent='❌ 저장 실패. 결과를 스크린샷으로 저장해 주세요.';});
 }
 
 function resetQuiz() {
-  answered = new Array(questions.length).fill(false);
-  correctCount = 0;
+  answered=new Array(questions.length).fill(false); correctCount=0;
   document.getElementById('results').classList.remove('show');
-  document.getElementById('submitStatus').textContent = '';
-  renderQuiz();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('saveStatus').className='save-status';
+  renderQuiz(); window.scrollTo({top:0,behavior:'smooth'});
 }
 
 renderQuiz();
-
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec";
-const WEEK_ID = "Week7-2";
-let studentName = "";
-
-function startQuiz() {
-  const val = document.getElementById("studentName").value.trim();
-  if (!val) {
-    document.getElementById("nameErr").style.display = "block";
-    document.getElementById("studentName").focus();
-    return;
-  }
-  studentName = val;
-  document.getElementById("nameOverlay").style.display = "none";
-}
-
-document.getElementById("studentName").addEventListener("keydown", function(e){
-  if (e.key === "Enter") startQuiz();
-});
-document.getElementById("studentName").addEventListener("input", function(){
-  document.getElementById("nameErr").style.display = "none";
-});
-
-const _origShowResults = showResults;
-showResults = function() {
-  _origShowResults();
-  submitResult();
-};
-
-function submitResult() {
-  const pct = Math.round(correctCount / questions.length * 100);
-  const gradeEl = document.getElementById("gradeBox");
-  const gradeText = gradeEl ? gradeEl.textContent.replace(/[^A-Za-z0-9가-힣 ]/g,"").trim() : "";
-
-  const saveEl = document.createElement("div");
-  saveEl.className = "save-status saving";
-  saveEl.id = "saveStatus";
-  saveEl.textContent = "저장 중...";
-  document.getElementById("results").appendChild(saveEl);
-
-  if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec") {
-    saveEl.className = "save-status save-err";
-    saveEl.textContent = "교수자 설정 전입니다. 결과를 스크린샷으로 저장하세요.";
-    return;
-  }
-
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: studentName,
-      week: WEEK_ID,
-      correct: correctCount,
-      total: questions.length,
-      pct: pct,
-      grade: gradeText
-    })
-  }).then(function() {
-    saveEl.className = "save-status saved";
-    saveEl.textContent = "✅ " + studentName + "님의 결과가 저장되었습니다.";
-  }).catch(function() {
-    saveEl.className = "save-status save-err";
-    saveEl.textContent = "저장 실패. 네트워크를 확인해 주세요.";
-  });
-}
-
 </script>
 </body>
 </html>
