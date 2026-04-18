@@ -34,6 +34,44 @@ body {
   min-height: 100vh;
 }
 
+/* ── START SCREEN ── */
+.start-screen {
+  position: fixed; inset: 0; background: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; padding: 1.5rem;
+}
+.start-box {
+  background: var(--surface); border-radius: 16px;
+  padding: 2.5rem 2rem; width: 100%; max-width: 420px; text-align: center;
+}
+.start-box .s-label { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: .08em; margin-bottom: .5rem; }
+.start-box h2 { font-size: 20px; font-weight: 700; margin-bottom: .375rem; }
+.start-box .s-sub { font-size: 13px; color: var(--text2); margin-bottom: 1.75rem; line-height: 1.6; }
+.start-box .s-meta { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.75rem; }
+.start-box .s-meta span { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.start-box .s-meta b { color: var(--text); font-weight: 500; }
+.name-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); text-align: left; margin-bottom: .5rem; }
+.name-input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
+  padding: .75rem 1rem; font-size: 15px; font-family: 'Noto Sans KR', sans-serif;
+  color: var(--text); background: var(--bg); outline: none;
+  transition: border-color .15s; margin-bottom: .375rem;
+}
+.name-input:focus { border-color: var(--accent); background: var(--surface); }
+.name-error { font-size: 12px; color: var(--wrong); margin-bottom: .875rem; min-height: 18px; text-align: left; }
+.btn-start {
+  width: 100%; background: var(--accent); color: #fff; border: none;
+  border-radius: 9px; padding: .875rem; font-size: 15px; font-weight: 700;
+  font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn-start:hover { opacity: .88; }
+.btn-start:active { transform: scale(.98); }
+.submit-status {
+  margin-top: .75rem; font-size: 12px; color: var(--text3);
+  font-family: var(--mono); min-height: 16px;
+}
+
 /* ── HEADER ── */
 .site-header {
   background: var(--text);
@@ -353,9 +391,44 @@ body {
   .results .breakdown { grid-template-columns: 1fr; }
   .results .big-score { font-size: 48px; }
 }
+
+/* NAME OVERLAY */
+.name-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.name-box{background:#fff;border-radius:16px;padding:2.5rem 2rem;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.name-box .nb-course{font-size:11px;color:#a09880;letter-spacing:.06em;margin-bottom:.5rem}
+.name-box h2{font-size:20px;font-weight:700;color:#18160f;margin-bottom:.5rem}
+.name-box p{font-size:13px;color:#6a6355;margin-bottom:1.5rem;line-height:1.65}
+.name-input{width:100%;padding:.875rem 1rem;border:1.5px solid #dbd8d0;border-radius:9px;font-size:15px;font-family:"Noto Sans KR",sans-serif;color:#18160f;outline:none;transition:border-color .15s;margin-bottom:.625rem;text-align:center}
+.name-input:focus{border-color:#1a3a8f}
+.name-input::placeholder{color:#b0a898}
+.name-start-btn{width:100%;padding:.875rem;background:#18160f;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;font-family:"Noto Sans KR",sans-serif;cursor:pointer;transition:opacity .15s;margin-top:.25rem}
+.name-start-btn:hover{opacity:.85}
+.name-err{font-size:12px;color:#991b1b;margin-bottom:.5rem;display:none}
+.save-status{margin-top:.875rem;padding:.625rem .875rem;border-radius:7px;font-size:12px;display:none}
+.save-status.saving{display:block;background:#fef3c7;color:#92400e}
+.save-status.saved{display:block;background:#dcfce7;color:#166534}
+.save-status.save-err{display:block;background:#fee2e2;color:#991b1b}
+
 </style>
 </head>
 <body>
+
+<div class="start-screen" id="startScreen">
+  <div class="start-box">
+    <div class="s-label">지역혁신연구방법론 · WEEK 7</div>
+    <h2>통계와 통계학 퀴즈</h2>
+    <div class="s-sub">보기를 클릭하면 즉시 정답과 해설이 표시됩니다.<br>시작 전 이름을 입력해 주세요.</div>
+    <div class="s-meta">
+      <span><b>15</b> 문항</span>
+      <span><b>4지선다</b></span>
+      <span>즉시 피드백</span>
+    </div>
+    <label class="name-label" for="nameInput">이름</label>
+    <input class="name-input" id="nameInput" type="text" placeholder="예: 홍길동" maxlength="20" autocomplete="off">
+    <div class="name-error" id="nameError"></div>
+    <button class="btn-start" onclick="startQuiz()">퀴즈 시작 →</button>
+  </div>
+</div>
 
 <header class="site-header">
   <div>
@@ -400,6 +473,19 @@ body {
       </div>
     </div>
     <button class="btn-reset" onclick="resetQuiz()">다시 풀기</button>
+    <div class="submit-status" id="submitStatus"></div>
+  </div>
+
+
+  <div class="name-overlay" id="nameOverlay">
+    <div class="name-box">
+      <div class="nb-course">지역혁신연구방법론 · Week 7 ①</div>
+      <h2>퀴즈 시작 전<br>이름을 입력하세요</h2>
+      <p>입력한 이름과 점수가 기록됩니다.<br>정확하게 입력해 주세요.</p>
+      <input class="name-input" id="studentName" type="text" placeholder="예) 홍길동" maxlength="20" autocomplete="off">
+      <div class="name-err" id="nameErr">이름을 입력해 주세요.</div>
+      <button class="name-start-btn" onclick="startQuiz()">퀴즈 시작하기</button>
+    </div>
   </div>
 
 </main>
@@ -407,6 +493,44 @@ body {
 <footer class="page-footer">지역혁신연구방법론 2026-1 · Week 7 · 통계와 통계학</footer>
 
 <script>
+// ★ Apps Script 배포 후 아래 URL을 교체하세요
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec_HERE';
+const WEEK_LABEL = 'Week 7 ① 통계와 통계학';
+
+let studentName = '';
+
+function startQuiz() {
+  const val = document.getElementById('nameInput').value.trim();
+  if (!val) {
+    document.getElementById('nameError').textContent = '이름을 입력해 주세요.';
+    document.getElementById('nameInput').focus();
+    return;
+  }
+  studentName = val;
+  document.getElementById('startScreen').style.display = 'none';
+  renderQuiz();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('startScreen').style.display !== 'none') startQuiz();
+});
+
+async function submitResult(pct, correct, total, grade) {
+  if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec_HERE') return;
+  document.getElementById('submitStatus').textContent = '결과 저장 중...';
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: studentName, week: WEEK_LABEL, pct, correct, total, grade })
+    });
+    document.getElementById('submitStatus').textContent = '✓ 결과가 저장되었습니다.';
+  } catch {
+    document.getElementById('submitStatus').textContent = '저장 실패 — 네트워크를 확인해 주세요.';
+  }
+}
+
 const questions = [
   {
     tag: "통계의 정의",
@@ -635,17 +759,85 @@ function showResults() {
   const resultsEl = document.getElementById('results');
   resultsEl.classList.add('show');
   setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  submitResult(pct, correctCount, questions.length, grade);
 }
 
 function resetQuiz() {
   answered = new Array(questions.length).fill(false);
   correctCount = 0;
   document.getElementById('results').classList.remove('show');
+  document.getElementById('submitStatus').textContent = '';
   renderQuiz();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-renderQuiz();
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec";
+const WEEK_ID = "Week7-1";
+let studentName = "";
+
+function startQuiz() {
+  const val = document.getElementById("studentName").value.trim();
+  if (!val) {
+    document.getElementById("nameErr").style.display = "block";
+    document.getElementById("studentName").focus();
+    return;
+  }
+  studentName = val;
+  document.getElementById("nameOverlay").style.display = "none";
+}
+
+document.getElementById("studentName").addEventListener("keydown", function(e){
+  if (e.key === "Enter") startQuiz();
+});
+document.getElementById("studentName").addEventListener("input", function(){
+  document.getElementById("nameErr").style.display = "none";
+});
+
+const _origShowResults = showResults;
+showResults = function() {
+  _origShowResults();
+  submitResult();
+};
+
+function submitResult() {
+  const pct = Math.round(correctCount / questions.length * 100);
+  const gradeEl = document.getElementById("gradeBox");
+  const gradeText = gradeEl ? gradeEl.textContent.replace(/[^A-Za-z0-9가-힣 ]/g,"").trim() : "";
+
+  const saveEl = document.createElement("div");
+  saveEl.className = "save-status saving";
+  saveEl.id = "saveStatus";
+  saveEl.textContent = "저장 중...";
+  document.getElementById("results").appendChild(saveEl);
+
+  if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec") {
+    saveEl.className = "save-status save-err";
+    saveEl.textContent = "교수자 설정 전입니다. 결과를 스크린샷으로 저장하세요.";
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: studentName,
+      week: WEEK_ID,
+      correct: correctCount,
+      total: questions.length,
+      pct: pct,
+      grade: gradeText
+    })
+  }).then(function() {
+    saveEl.className = "save-status saved";
+    saveEl.textContent = "✅ " + studentName + "님의 결과가 저장되었습니다.";
+  }).catch(function() {
+    saveEl.className = "save-status save-err";
+    saveEl.textContent = "저장 실패. 네트워크를 확인해 주세요.";
+  });
+}
+
 </script>
 </body>
 </html>

@@ -312,6 +312,24 @@ footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size:
   .results .big-score { font-size: 48px; }
   .results .breakdown { grid-template-columns: 1fr; }
 }
+
+/* NAME OVERLAY */
+.name-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.name-box{background:#fff;border-radius:16px;padding:2.5rem 2rem;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.name-box .nb-course{font-size:11px;color:#a09880;letter-spacing:.06em;margin-bottom:.5rem}
+.name-box h2{font-size:20px;font-weight:700;color:#18160f;margin-bottom:.5rem}
+.name-box p{font-size:13px;color:#6a6355;margin-bottom:1.5rem;line-height:1.65}
+.name-input{width:100%;padding:.875rem 1rem;border:1.5px solid #dbd8d0;border-radius:9px;font-size:15px;font-family:"Noto Sans KR",sans-serif;color:#18160f;outline:none;transition:border-color .15s;margin-bottom:.625rem;text-align:center}
+.name-input:focus{border-color:#1a3a8f}
+.name-input::placeholder{color:#b0a898}
+.name-start-btn{width:100%;padding:.875rem;background:#18160f;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;font-family:"Noto Sans KR",sans-serif;cursor:pointer;transition:opacity .15s;margin-top:.25rem}
+.name-start-btn:hover{opacity:.85}
+.name-err{font-size:12px;color:#991b1b;margin-bottom:.5rem;display:none}
+.save-status{margin-top:.875rem;padding:.625rem .875rem;border-radius:7px;font-size:12px;display:none}
+.save-status.saving{display:block;background:#fef3c7;color:#92400e}
+.save-status.saved{display:block;background:#dcfce7;color:#166534}
+.save-status.save-err{display:block;background:#fee2e2;color:#991b1b}
+
 </style>
 </head>
 <body>
@@ -333,7 +351,7 @@ footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size:
     <h2>데이터 척도 &amp; 팀 프로젝트</h2>
     <p>초급 학생들이 가장 많이 헷갈리는 개념을 집중적으로 담았습니다.<br>보기를 클릭하면 즉시 정답과 해설이 표시됩니다.</p>
     <div class="warn">
-      ⚠️ <b>특히 주의:</b> 등간척도 vs. 비율척도 구분, Likert 처리 방법, 독립·종속·통제변수 구분, 조작적 정의 — 이 4가지가 핵심입니다.
+      ⚠️ <b>특히 주의:</b> 등간척도 vs 비율척도 구분, Likert 처리 방법, 독립·종속·통제변수 구분, 조작적 정의 — 이 4가지가 핵심입니다.
     </div>
     <div class="meta-row">
       <div class="meta-item"><b>20</b> 문항</div>
@@ -357,6 +375,18 @@ footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size:
     <button class="btn-reset" onclick="resetQuiz()">다시 풀기</button>
     <a href="index.html" class="btn-back">목차로</a>
   </div>
+
+  <div class="name-overlay" id="nameOverlay">
+    <div class="name-box">
+      <div class="nb-course">지역혁신연구방법론 · Week 8</div>
+      <h2>퀴즈 시작 전<br>이름을 입력하세요</h2>
+      <p>입력한 이름과 점수가 기록됩니다.<br>정확하게 입력해 주세요.</p>
+      <input class="name-input" id="studentName" type="text" placeholder="예) 홍길동" maxlength="20" autocomplete="off">
+      <div class="name-err" id="nameErr">이름을 입력해 주세요.</div>
+      <button class="name-start-btn" onclick="startQuiz()">퀴즈 시작하기</button>
+    </div>
+  </div>
+
 </main>
 
 <footer>지역혁신연구방법론 2026-1 · Week 8 · 데이터 척도 &amp; 팀 프로젝트</footer>
@@ -390,7 +420,7 @@ const questions = [
     fb: "<b>명목척도</b>는 이름으로만 구분하며 순서나 크기의 의미가 없습니다. 혈액형은 A·B·O·AB로 구분만 할 뿐, 어느 혈액형이 더 크거나 높다는 의미가 없습니다. 학년·만족도·소득수준은 순서가 있으므로 순서척도입니다."
   },
   {
-    tag: "등간 vs. 비율척도",
+    tag: "등간 vs 비율척도",
     diff: "hard",
     text: "등간척도(Interval Scale)와 비율척도(Ratio Scale)의 결정적 차이는 무엇인가?",
     opts: [
@@ -468,7 +498,7 @@ const questions = [
     fb: "<b>카이제곱(χ²) 분석</b>은 명목척도(범주형) 변수 2개 사이의 관계(독립성)를 검정하는 방법입니다. 예: 성별(남/여) × 앱 이탈 여부(Y/N). t-검정은 독립변수가 명목, 종속변수가 등간/비율일 때 사용합니다."
   },
   {
-    tag: "독립 vs. 종속변수",
+    tag: "독립 vs 종속변수",
     diff: "hard",
     text: "\"축제 프로그램 만족도가 재방문 의도에 영향을 주는가?\"라는 연구에서 독립변수(X)와 종속변수(Y)는?",
     opts: [
@@ -598,7 +628,7 @@ const questions = [
     fb: "변수 설계의 <b>명확성(Clarity)</b> 원칙 위반입니다. '청년층'은 연구마다 만 19~34세, 19~39세 등 다르게 정의됩니다. 변수를 정의할 때는 <b>조작적 정의</b>가 필요합니다. 예: '만 19~34세의 현재 일자리 만족도(5점 리커트 척도 평균)'처럼 구체적으로 써야 합니다."
   },
   {
-    tag: "척도 vs. 데이터 타입",
+    tag: "척도 vs 데이터 타입",
     diff: "hard",
     text: "데이터 척도(Scale)와 데이터 타입(Type)의 관계로 올바른 것은?",
     opts: [
@@ -726,7 +756,7 @@ function showResults() {
     msg = '훌륭해요! 대부분의 개념을 잘 이해하고 있습니다. 틀린 문항의 해설을 한 번 더 읽어보세요.';
   } else if (pct >= 55) {
     grade = '📘 B등급'; gradeClass = 'grade-b';
-    msg = '기본 개념은 잡혔습니다! 등간 vs. 비율척도 구분, Likert 실무 처리, 독립·통제변수 개념을 다시 복습해 보세요.';
+    msg = '기본 개념은 잡혔습니다! 등간 vs 비율척도 구분, Likert 실무 처리, 독립·통제변수 개념을 다시 복습해 보세요.';
   } else {
     grade = '📖 복습 후 재도전'; gradeClass = 'grade-c';
     msg = '핵심 용어 정리 자료(week7_key_terms.html)를 다시 읽고 재도전해 보세요. 척도 구분은 반복 학습이 가장 효과적입니다!';
@@ -751,6 +781,73 @@ function resetQuiz() {
 }
 
 renderQuiz();
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec";
+const WEEK_ID = "Week8";
+let studentName = "";
+
+function startQuiz() {
+  const val = document.getElementById("studentName").value.trim();
+  if (!val) {
+    document.getElementById("nameErr").style.display = "block";
+    document.getElementById("studentName").focus();
+    return;
+  }
+  studentName = val;
+  document.getElementById("nameOverlay").style.display = "none";
+}
+
+document.getElementById("studentName").addEventListener("keydown", function(e){
+  if (e.key === "Enter") startQuiz();
+});
+document.getElementById("studentName").addEventListener("input", function(){
+  document.getElementById("nameErr").style.display = "none";
+});
+
+const _origShowResults = showResults;
+showResults = function() {
+  _origShowResults();
+  submitResult();
+};
+
+function submitResult() {
+  const pct = Math.round(correctCount / questions.length * 100);
+  const gradeEl = document.getElementById("gradeBox");
+  const gradeText = gradeEl ? gradeEl.textContent.replace(/[^A-Za-z0-9가-힣 ]/g,"").trim() : "";
+
+  const saveEl = document.createElement("div");
+  saveEl.className = "save-status saving";
+  saveEl.id = "saveStatus";
+  saveEl.textContent = "저장 중...";
+  document.getElementById("results").appendChild(saveEl);
+
+  if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbytwEy_GN_yFFK8ACzjTrrjjp4rMhr-ru_q0nRmP2j15ZjzN2bqPmR8J61zeyVujxD8/exec") {
+    saveEl.className = "save-status save-err";
+    saveEl.textContent = "교수자 설정 전입니다. 결과를 스크린샷으로 저장하세요.";
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: studentName,
+      week: WEEK_ID,
+      correct: correctCount,
+      total: questions.length,
+      pct: pct,
+      grade: gradeText
+    })
+  }).then(function() {
+    saveEl.className = "save-status saved";
+    saveEl.textContent = "✅ " + studentName + "님의 결과가 저장되었습니다.";
+  }).catch(function() {
+    saveEl.className = "save-status save-err";
+    saveEl.textContent = "저장 실패. 네트워크를 확인해 주세요.";
+  });
+}
+
 </script>
 </body>
 </html>
