@@ -134,7 +134,7 @@ footer{text-align:center;padding:2rem;font-family:var(--mono);font-size:11px;col
 <footer>지역혁신연구방법론 2026-1 · Week 7 ① · 통계와 통계학</footer>
 
 <script>
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKnMbqtSJqGNZ09niqM-9woC6de-B-NkTAlihx7PDG7JSivl5CnvJ-S7UMq-FvUCU/exec";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzw6oTljopi4X_bFbLB9d_Qwv0n4YXA6AVRgePRessWGnBcvxXbeu8I2fyx3VaUt7EbKQ/exec";
 var WEEK_ID = "Week7-1";
 var studentName = "";
 
@@ -241,12 +241,15 @@ function showResults() {
 function submitResult(pct, grade) {
   var s = document.getElementById('saveStatus');
   s.className = 'save-status saving'; s.textContent = '⏳ 결과 저장 중...';
-  fetch(SCRIPT_URL, {
-    method:'POST', mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({name:studentName, week:WEEK_ID, correct:correctCount, total:questions.length, pct:pct, grade:grade})
-  }).then(function(){ s.className='save-status saved'; s.textContent='✅ '+studentName+'님의 결과가 저장되었습니다.'; })
-    .catch(function(){ s.className='save-status save-err'; s.textContent='❌ 저장 실패. 결과를 스크린샷으로 저장해 주세요.'; });
+  var params = '?name=' + encodeURIComponent(studentName)
+             + '&week=' + encodeURIComponent(WEEK_ID)
+             + '&correct=' + correctCount
+             + '&total=' + questions.length
+             + '&pct=' + pct
+             + '&grade=' + encodeURIComponent(grade);
+  fetch(SCRIPT_URL + params, { method: 'GET', mode: 'no-cors' })
+    .then(function() { s.className='save-status saved'; s.textContent='✅ '+studentName+'님의 결과가 저장되었습니다.'; })
+    .catch(function() { s.className='save-status save-err'; s.textContent='❌ 저장 실패. 결과를 스크린샷으로 저장해 주세요.'; });
 }
 
 function resetQuiz() {
