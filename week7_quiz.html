@@ -134,7 +134,7 @@ footer{text-align:center;padding:2rem;font-family:var(--mono);font-size:11px;col
 <footer>지역혁신연구방법론 2026-1 · Week 7 ① · 통계와 통계학</footer>
 
 <script>
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzw6oTljopi4X_bFbLB9d_Qwv0n4YXA6AVRgePRessWGnBcvxXbeu8I2fyx3VaUt7EbKQ/exec";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7fcaTl9AdRyHKda_WP8k6UvVmi0exEHn8_QjkG6tHc6Uk3yA97IqUy2nJqTatHoSrOA/exec";
 var WEEK_ID = "Week7-1";
 var studentName = "";
 
@@ -167,6 +167,7 @@ var questions = [
 
 var answered = new Array(questions.length).fill(false);
 var correctCount = 0;
+var selectedAnswers = new Array(questions.length).fill(-1);
 var letters = ['①','②','③','④'];
 
 function renderQuiz() {
@@ -196,6 +197,7 @@ function renderQuiz() {
 function selectAnswer(qi, oi) {
   if (answered[qi]) return;
   answered[qi] = true;
+  selectedAnswers[qi] = oi;
   var q = questions[qi];
   document.querySelectorAll('#q'+qi+' .opt').forEach(function(b, idx) {
     b.classList.add('disabled');
@@ -241,20 +243,44 @@ function showResults() {
 function submitResult(pct, grade) {
   var s = document.getElementById('saveStatus');
   s.className = 'save-status saving'; s.textContent = '⏳ 결과 저장 중...';
-  var params = '?name=' + encodeURIComponent(studentName)
-             + '&week=' + encodeURIComponent(WEEK_ID)
+
+  // Build compact answer strings: selected answers & correct answers (comma-separated indices)
+  var sel = selectedAnswers.join(',');
+  var cor = questions.map(function(q){ return q.answer; }).join(',');
+  // Build question texts (pipe-separated, truncated to 30 chars each)
+  var qtexts = questions.map(function(q){ return q.text.replace(/,/g,' ').substring(0,30); }).join('|');
+  // Build selected option texts
+  var optexts = questions.map(function(q,i){
+    var idx = selectedAnswers[i];
+    return (idx !== undefined && idx !== null && idx >= 0) ? q.opts[idx].replace(/,/g,' ').substring(0,20) : '-';
+  }).join('|');
+
+  var params = '?name='    + encodeURIComponent(studentName)
+             + '&week='    + encodeURIComponent(WEEK_ID)
              + '&correct=' + correctCount
-             + '&total=' + questions.length
-             + '&pct=' + pct
-             + '&grade=' + encodeURIComponent(grade);
+             + '&total='   + questions.length
+             + '&pct='     + pct
+             + '&grade='   + encodeURIComponent(grade)
+             + '&sel='     + encodeURIComponent(sel)
+             + '&cor='     + encodeURIComponent(cor)
+             + '&qtexts='  + encodeURIComponent(qtexts)
+             + '&optexts=' + encodeURIComponent(optexts);
+
   fetch(SCRIPT_URL + params, { method: 'GET', mode: 'no-cors' })
-    .then(function() { s.className='save-status saved'; s.textContent='✅ '+studentName+'님의 결과가 저장되었습니다.'; })
-    .catch(function() { s.className='save-status save-err'; s.textContent='❌ 저장 실패. 결과를 스크린샷으로 저장해 주세요.'; });
+    .then(function() {
+      s.className = 'save-status saved';
+      s.textContent = '✅ ' + studentName + '님의 결과가 저장되었습니다.';
+    })
+    .catch(function() {
+      s.className = 'save-status save-err';
+      s.textContent = '❌ 저장 실패. 결과를 스크린샷으로 저장해 주세요.';
+    });
 }
 
 function resetQuiz() {
   answered = new Array(questions.length).fill(false);
   correctCount = 0;
+  selectedAnswers = new Array(questions.length).fill(-1);
   document.getElementById('results').classList.remove('show');
   document.getElementById('saveStatus').className = 'save-status';
   renderQuiz();
