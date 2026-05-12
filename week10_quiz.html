@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 10 — 기술통계 II 종합 퀴즈 | 지역혁신연구방법론</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    margin: 0;
+    padding: 20px;
+    color: #2c3e50;
+    line-height: 1.6;
+  }
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    padding: 36px;
+  }
+  .header {
+    border-bottom: 3px solid #6c5ce7;
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+  .week-tag {
+    display: inline-block;
+    background: #6c5ce7;
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  h1 {
+    margin: 6px 0 4px 0;
+    font-size: 28px;
+    color: #2c3e50;
+  }
+  .subtitle {
+    color: #7f8c8d;
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .intro {
+    background: #f8f9fa;
+    border-left: 4px solid #6c5ce7;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 26px;
+  }
+  .intro h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #6c5ce7;
+  }
+  .intro p {
+    margin: 0 0 8px 0;
+    font-size: 14.5px;
+    color: #555;
+  }
+  .topic-tags {
+    margin-top: 10px;
+  }
+  .topic-tag {
+    display: inline-block;
+    background: #e8eaf6;
+    color: #5c6bc0;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-bottom: 4px;
+  }
+  .name-input-wrap {
+    background: #fffbf0;
+    border: 2px solid #ffd54f;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 22px;
+  }
+  .name-input-wrap label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .name-input-wrap input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+  }
+  .section-divider {
+    margin: 24px 0 14px 0;
+    padding: 10px 14px;
+    background: #ede7f6;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #6c5ce7;
+    border-left: 5px solid #6c5ce7;
+  }
+  .question {
+    background: #fafbfc;
+    border: 1px solid #e1e8ed;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+  .q-num {
+    font-weight: 700;
+    color: #6c5ce7;
+    font-size: 15px;
+  }
+  .diff-badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .diff-하 { background: #e8f5e9; color: #2e7d32; }
+  .diff-중 { background: #fff3e0; color: #ef6c00; }
+  .diff-상 { background: #ffebee; color: #c62828; }
+  .q-text {
+    font-size: 15.5px;
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .scenario {
+    display: block;
+    background: #f0f4ff;
+    border-left: 3px solid #6c5ce7;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 14.5px;
+    margin-bottom: 8px;
+  }
+  .data-block {
+    background: #fff3cd;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-family: 'Consolas', monospace;
+  }
+  .key-point {
+    color: #6c5ce7;
+    font-weight: 600;
+  }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    background: #fff;
+    border: 1.5px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-size: 14.5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .option:hover {
+    background: #f8f9ff;
+    border-color: #6c5ce7;
+  }
+  .option.selected {
+    background: #ede7f6;
+    border-color: #6c5ce7;
+  }
+  .option.correct {
+    background: #e8f5e9;
+    border-color: #43a047;
+  }
+  .option.wrong {
+    background: #ffebee;
+    border-color: #e53935;
+  }
+  .option-label {
+    font-weight: 700;
+    color: #6c5ce7;
+    flex-shrink: 0;
+  }
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #e8f5e9; border-left: 3px solid #43a047; }
+  .feedback.ng { background: #ffebee; border-left: 3px solid #e53935; }
+  .submit-wrap { text-align: center; margin-top: 26px; }
+  .submit-btn {
+    background: #6c5ce7;
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 26px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .submit-btn:hover { background: #5749c2; transform: translateY(-2px); }
+  .submit-btn:disabled { background: #b3a8e0; cursor: not-allowed; transform: none; }
+  .results {
+    display: none;
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+  }
+  .results.show { display: block; }
+  .results .label {
+    color: #6c5ce7;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .big-score {
+    font-size: 56px;
+    font-weight: 800;
+    color: #2c3e50;
+    margin: 8px 0;
+  }
+  .score-label { color: #555; font-size: 15px; margin-bottom: 14px; }
+  .grade {
+    display: inline-block;
+    padding: 5px 18px;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 15px;
+    background: #6c5ce7;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .result-msg {
+    font-size: 14.5px;
+    color: #444;
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0 auto 18px auto;
+  }
+  .breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 36px;
+    margin: 14px 0;
+  }
+  .breakdown span { font-size: 30px; font-weight: 700; display: block; }
+  .breakdown .ok { color: #43a047; }
+  .breakdown .ng { color: #e53935; }
+  .bd-label { font-size: 12px; color: #777; margin-top: 2px; }
+  .reset-btn {
+    background: #fff;
+    color: #6c5ce7;
+    border: 2px solid #6c5ce7;
+    padding: 10px 24px;
+    border-radius: 22px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+    font-family: inherit;
+  }
+  .reset-btn:hover { background: #6c5ce7; color: #fff; }
+  #saveStatusWrap {
+    margin: 12px 0;
+    font-size: 13px;
+    color: #555;
+  }
+  .save-ok { color: #43a047; font-weight: 600; }
+  .save-fail { color: #e53935; font-weight: 600; }
+  .back-link {
+    display: inline-block;
+    margin-bottom: 14px;
+    color: #6c5ce7;
+    text-decoration: none;
+    font-size: 13.5px;
+  }
+  .back-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<main>
+  <a href="index.html" class="back-link">← 퀴즈 목록으로</a>
+  <div class="header">
+    <span class="week-tag">WEEK 10 — 종합</span>
+    <h1>기술통계 II — 종합 퀴즈</h1>
+    <div class="subtitle">분산도 · 시각화 · 분포 형태 · 결측치 · 변수 식별 · RAG</div>
+  </div>
+
+  <div class="intro">
+    <h3>이번 퀴즈에서 다루는 핵심 개념 (총 20문항)</h3>
+    <p>10주차에서 배운 모든 핵심 개념을 한 번에 점검합니다. 분산도 측정에서 출발해 박스플롯 마스터, 이상치·결측치 처리, 시각화 선택, 범주형 분석, 그리고 마지막으로 RAG와 변수 식별까지 — 11주차 추론통계로 진입하기 전 필수 점검입니다.</p>
+    <div class="topic-tags">
+      <span class="topic-tag">표준편차</span>
+      <span class="topic-tag">왜도·첨도</span>
+      <span class="topic-tag">박스플롯</span>
+      <span class="topic-tag">IQR</span>
+      <span class="topic-tag">z-score</span>
+      <span class="topic-tag">결측치</span>
+      <span class="topic-tag">시각화</span>
+      <span class="topic-tag">value_counts</span>
+      <span class="topic-tag">상관 히트맵</span>
+      <span class="topic-tag">종속/독립변수</span>
+      <span class="topic-tag">RAG</span>
+    </div>
+  </div>
+
+  <div class="name-input-wrap">
+    <label for="studentNameInput">이름 (선택 — 입력 시 결과가 저장됩니다)</label>
+    <input id="studentNameInput" type="text" placeholder="예: 홍길동" />
+  </div>
+
+  <div id="quizContainer"></div>
+
+  <div class="submit-wrap">
+    <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">정답 확인</button>
+  </div>
+
+  <div class="results" id="results">
+    <div class="label">QUIZ COMPLETE</div>
+    <div class="big-score" id="bigScore">0%</div>
+    <div class="score-label" id="scoreLabel">20문항 중 0개 정답</div>
+    <div class="grade" id="gradeBox">-</div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="breakdown">
+      <div><span class="ok" id="bdCorrect">0</span><div class="bd-label">CORRECT</div></div>
+      <div><span class="ng" id="bdWrong">0</span><div class="bd-label">WRONG</div></div>
+    </div>
+    <div id="saveStatusWrap"></div>
+    <div><button class="reset-btn" onclick="resetQuiz()">다시 풀기</button></div>
+  </div>
+</main>
+
+<script>
+// ============================================
+// CONFIGURATION
+// ============================================
+var WEEK_ID = "Week10";
+var SCRIPT_URL = "YOUR_APPS_SCRIPT_URL"; // 교수자가 Apps Script 배포 후 URL 교체
+var studentName = "";
+
+// ============================================
+// QUESTIONS — 10주차 종합 20문항
+// (분포 형태 → 박스플롯 → 데이터 클리닝 → 시각화 → 관계 분석 → IT 트렌드)
+// ============================================
+var questions = [
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // SECTION 1: 분포 형태와 분산도 (Q1-Q5)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // Q1: 표준편차 정의 (하)
+  {
+    section: "분포 형태와 분산도",
+    diff: "하",
+    text: "<b>표준편차(Standard Deviation)</b>에 대한 가장 정확한 설명은?",
+    opts: [
+      "데이터의 가장 큰 값과 가장 작은 값의 차이",
+      "데이터가 평균에서 얼마나 떨어져 흩어져 있는지 나타내는 값",
+      "데이터의 가운데 50%가 차지하는 범위",
+      "데이터의 가장 자주 등장하는 값"
+    ],
+    answer: 1,
+    fb: "표준편차는 <span class='key-point'>평균으로부터의 평균적 거리</span>입니다. 작을수록 평균 근처에 모여 있고, 클수록 넓게 흩어져 있습니다. (참고: ① 범위, ③ 사분위범위(IQR), ④ 최빈값)"
+  },
+
+  // Q2: 왜도 (중)
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — UX 디자이너]</b> 글로벌 모바일 게임 UX 디자이너 A씨가 일일 플레이 시간 분포를 분석합니다. 대부분은 30분 이내인데, 일부 헤비 유저는 6시간 이상 플레이합니다. <span class='data-block'>평균=45분, 중앙값=25분</span>. 이 분포의 <b>왜도(Skewness)</b>는?</span>",
+    opts: [
+      "0에 가까움 — 대칭 분포이다",
+      "양의 왜도 — 오른쪽으로 꼬리가 길다",
+      "음의 왜도 — 왼쪽으로 꼬리가 길다",
+      "왜도는 의미가 없으며 첨도만 분포를 설명한다"
+    ],
+    answer: 1,
+    fb: "<span class='key-point'>평균(45) > 중앙값(25)</span>이면 평균이 큰 값 쪽으로 끌려간 것 → 오른쪽으로 꼬리가 긴 <b>양의 왜도(positive skew)</b>입니다. 이런 분포에서는 \"평균 플레이 시간\"이 실제 일반 유저 경험을 왜곡합니다. UX 디자인은 중앙값 사용자를 기준으로 해야 합니다."
+  },
+
+  // Q3: 첨도 (중)
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 스타트업 데이터 PM]</b> 글로벌 SaaS 회사의 무료 체험 → 유료 전환율을 분석합니다. 대부분 회사의 전환율이 평균 <span class='data-block'>15%</span> 근처에 매우 좁게 몰려 있고, 5% 이하나 30% 이상은 거의 없습니다. 이 분포의 특징을 가장 잘 설명한 것은?</span>",
+    opts: [
+      "첨도가 매우 크다 (뾰족함) — 데이터가 중앙에 강하게 몰려 있다",
+      "첨도가 매우 작다 (납작함) — 데이터가 골고루 퍼져 있다",
+      "양의 왜도 — 한쪽 꼬리가 매우 길다",
+      "음의 왜도 — 반대쪽 꼬리가 매우 길다"
+    ],
+    answer: 0,
+    fb: "<span class='key-point'>첨도(Kurtosis)</span>는 \"분포가 얼마나 뾰족하고 평평한지\"를 나타냅니다. 중앙에 강하게 몰리면 첨도가 크고(High Kurtosis), 골고루 퍼지면 첨도가 작습니다(Low Kurtosis). 왜도(Skewness)는 \"꼬리가 어느 쪽으로 긴지\"를 보는 것이라 이 시나리오와는 다른 개념입니다."
+  },
+
+  // Q4: 평균 같음 + SD 비교 (중) — 글로벌 디지털 마케터
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 글로벌 디지털 마케터]</b> 두 광고 캠페인의 클릭률(CTR) 평균이 똑같이 <span class='data-block'>3.0%</span>입니다. 캠페인 A의 표준편차는 <span class='data-block'>0.3%</span>, 캠페인 B의 표준편차는 <span class='data-block'>2.1%</span>. 다음 시즌 \"예측 가능한 성과\"가 필요하다면?</span>",
+    opts: [
+      "A — 표준편차가 작아 결과가 일관되고 예측 가능하다",
+      "B — 표준편차가 커서 더 다양한 성과를 낼 수 있다",
+      "둘 다 동일 — 평균이 같으므로 차이가 없다",
+      "표준편차로는 알 수 없고 t-검정이 필요하다"
+    ],
+    answer: 0,
+    fb: "평균이 같아도 <span class='key-point'>흩어진 정도</span>는 완전히 다른 이야기입니다. A는 \"안정적으로 3% 근처\", B는 \"어떤 날은 1%, 어떤 날은 5%\". 예산·KPI 안정성이 중요하면 A. 반대로 \"대박 가능성\"이 필요하면 B(고위험·고수익). 마케팅·투자 의사결정의 핵심입니다."
+  },
+
+  // Q5: 변동계수 CV (상) — 스타트업 데이터 PM
+  {
+    diff: "상",
+    text: "<span class='scenario'><b>[시나리오 — 스타트업 데이터 PM]</b> K씨가 \"신규 가입자 수(단위: 명)\"와 \"평균 매출(단위: 원)\"의 <b>변동성</b>을 비교하려고 합니다. 두 변수는 단위가 완전히 다른데, 어떻게 비교해야 하는가?</span>",
+    opts: [
+      "분산(variance)을 직접 비교한다",
+      "표준편차(SD)를 직접 비교한다",
+      "변동계수(CV = 표준편차 / 평균)로 비교한다",
+      "단위가 다르면 비교 자체가 불가능하다"
+    ],
+    answer: 2,
+    fb: "<span class='key-point'>변동계수(CV, Coefficient of Variation)</span>는 표준편차를 평균으로 나눈 \"상대적 변동성\"입니다. 단위가 사라지므로 \"명\"과 \"원\"처럼 단위가 다른 변수도 비교 가능합니다. 예: 가입자 CV=0.12, 매출 CV=0.45 → 매출이 가입자보다 상대적으로 훨씬 변동이 크다는 뜻."
+  },
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // SECTION 2: 박스플롯 마스터하기 (Q6-Q8)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // Q6: 박스플롯 구성요소 (하)
+  {
+    section: "박스플롯 마스터하기",
+    diff: "하",
+    text: "박스플롯(Boxplot)에서 <b>박스 안쪽의 가로선</b>(median line)이 나타내는 값은?",
+    opts: [
+      "평균(Mean)",
+      "표준편차(Standard Deviation)",
+      "최빈값(Mode)",
+      "중앙값(Median, Q2 = 50%)"
+    ],
+    answer: 3,
+    fb: "박스플롯의 핵심 구성요소: <span class='key-point'>박스 안 선 = 중앙값(Q2)</span>, 박스 아래 = Q1(25%), 박스 위 = Q3(75%), 박스 크기 = IQR. 평균은 박스플롯에 기본 표시되지 않습니다 — \"이상치에 강건한\" 시각화이기 때문입니다."
+  },
+
+  // Q7: IQR 강건성 (중) — UX 데이터 분석가
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — UX 데이터 분석가]</b> 글로벌 모바일 앱 사용자 100명의 \"앱 체류 시간\"을 분석 중인데, 1명이 <span class='data-block'>24시간</span> 연속 사용으로 기록되어 있습니다. \"전형적인 사용자\"의 체류 시간을 요약하려면 어떤 통계량 조합이 가장 적절한가?</span>",
+    opts: [
+      "평균(Mean) — 모든 값을 반영하므로 가장 객관적",
+      "분산(Variance) — 흩어짐을 잘 보여준다",
+      "중앙값(Median) + IQR — 이상치에 강건하다",
+      "최댓값(Max) — 사용 가능한 상한선을 보여준다"
+    ],
+    answer: 2,
+    fb: "이상치(24시간)가 1개라도 있으면 <span class='key-point'>평균과 분산은 크게 왜곡</span>됩니다. <b>중앙값 + IQR</b>은 이상치에 영향받지 않는(robust) 통계량 조합으로, \"전형적 사용자\"의 행동을 가장 정확히 묘사합니다. UX 보고서에 자주 사용됩니다."
+  },
+
+  // Q8: 박스플롯 두 그룹 비교 (중) — 강원도 교육
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 강원도 교육정책 데이터 분석가]</b> 강원도 고등학생 학습시간을 성별로 박스플롯 비교했습니다. M(남)과 F(여)의 <b>중앙값(박스 안 선)은 거의 동일</b>하지만, <b>M의 IQR(박스 크기)은 F보다 훨씬 큽니다</b>. 가장 적절한 해석은?</span>",
+    opts: [
+      "남학생들 사이의 학습시간 편차가 여학생보다 더 크다",
+      "남학생이 여학생보다 평균적으로 더 많이 공부한다",
+      "두 그룹은 통계적으로 유의미한 차이가 있다",
+      "여학생 그룹에 이상치가 더 많다"
+    ],
+    answer: 0,
+    fb: "<span class='key-point'>중앙값이 같다는 것은 \"가운데 사람\"의 학습시간이 비슷</span>하다는 뜻이고, <span class='key-point'>IQR이 크다는 것은 \"흩어짐(편차)이 크다\"</span>는 뜻입니다. 남학생 중에는 매우 적게 또는 매우 많이 공부하는 학생이 다양하게 분포한다는 의미입니다. (선택지 ③ '통계적 유의미성'은 t-검정 등 추론통계가 필요.)"
+  },
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // SECTION 3: 데이터 클리닝 (Q9-Q11)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // Q9: 이상치 ≠ 제거 (중) — 글로벌 e-커머스 VIP
+  {
+    section: "데이터 클리닝",
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 글로벌 e-커머스 데이터 분석가]</b> 고객 구매액 데이터 분석 중, 일부 VIP 고객이 일반 고객의 <span class='data-block'>100배 이상</span> 구매한 것으로 나타났습니다. 이를 \"이상치(outlier)\"로 판단하여 제거하는 것이 적절한가?</span>",
+    opts: [
+      "적절하지 않다 — VIP는 정상적인 비즈니스 패턴이므로 별도 그룹으로 분석해야 한다",
+      "적절하다 — 평균을 왜곡하므로 무조건 제거한다",
+      "적절하다 — IQR 범위를 벗어나면 자동으로 제거한다",
+      "데이터가 부족할 때만 유지하고 보통은 제거한다"
+    ],
+    answer: 0,
+    fb: "<span class='key-point'>\"이상치 = 무조건 제거\"는 위험한 사고</span>입니다. 이상치는 \"통계적으로 멀리 있는 값\"일 뿐, \"잘못된 데이터\"가 아닙니다. VIP·바이럴·블랙스완 같은 현상은 비즈니스의 핵심일 수 있어요. 이상치를 발견하면 (1) 입력 오류인가? (2) 실제 의미 있는 극단값인가? 를 먼저 판단해야 합니다."
+  },
+
+  // Q10: z-score = +2.5 (상) — 콘텐츠 크리에이터
+  {
+    diff: "상",
+    text: "<span class='scenario'><b>[시나리오 — 콘텐츠 크리에이터]</b> C씨의 일일 조회수를 표준화한 결과, 어제의 <span class='data-block'>z-score = +2.5</span>로 나왔습니다. 이를 어떻게 해석해야 하는가?</span>",
+    opts: [
+      "어제의 조회수가 평균과 같다",
+      "어제는 평균보다 2.5배 많은 조회수가 발생했다",
+      "어제는 평균 이하의 조회수였다",
+      "어제는 평균보다 표준편차의 약 2.5배 위에 위치한 매우 이례적으로 높은 날이다"
+    ],
+    answer: 3,
+    fb: "<span class='key-point'>z-score = (값 - 평균) / 표준편차</span>입니다. +2.5는 \"평균보다 2.5σ만큼 높다\"는 뜻이고, 정규분포에서는 상위 약 0.6%에 해당하는 매우 이례적인 값입니다. \"2.5배\"가 아니라 \"2.5 표준편차\"라는 점에 주의! 알고리즘 추천이나 바이럴 후보를 찾을 때 자주 사용됩니다."
+  },
+
+  // Q11: 결측치 처리 전략 (상) — 글로벌 SaaS NPS
+  {
+    diff: "상",
+    text: "<span class='scenario'><b>[시나리오 — 글로벌 SaaS 마케터]</b> 200명 고객 NPS 설문 분석. <span class='data-block'>major(고객사 업종)</span>는 결측 1개(0.5%), <span class='data-block'>satisfaction(만족도)</span>은 결측 25개(12.5%). 가장 적절한 처리 전략은?</span>",
+    opts: [
+      "두 변수 모두 행 삭제(dropna)로 처리한다 — 가장 단순하다",
+      "major는 'Other' 카테고리로 대체, satisfaction은 결측 비율이 10%를 넘으므로 단순 대체보다 결측 원인 분석·다중대체 등 신중한 접근이 필요하다",
+      "두 변수 모두 평균값으로 대체한다",
+      "satisfaction은 통째로 삭제하고, major는 그대로 둔다"
+    ],
+    answer: 1,
+    fb: "수업에서 다룬 기준: <span class='key-point'>결측 5% 미만은 삭제 가능, 10% 이상은 대체(imputation) 고려</span>. 또한 범주형 변수(major)는 평균·중앙값으로 대체할 수 없으므로 'Other' 카테고리를 추가하는 것이 일반적입니다. 결측 12.5%는 작지 않은 비율이라 \"왜 결측이 생겼는지\"(무작위 vs 체계적)를 확인하는 것이 연구윤리적으로 중요합니다."
+  },
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // SECTION 4: 시각화 선택 (Q12-Q14)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // Q12: 히스토그램 vs 막대그래프 (하)
+  {
+    section: "시각화 선택",
+    diff: "하",
+    text: "<b>히스토그램(Histogram)</b>과 <b>막대그래프(Bar chart)</b>의 가장 정확한 차이는?",
+    opts: [
+      "둘은 사실상 같은 그래프이다 — 명칭만 다르다",
+      "히스토그램은 연속형 변수의 분포를, 막대그래프는 범주형 변수의 빈도를 표현한다",
+      "히스토그램은 가로 막대만, 막대그래프는 세로 막대만 사용한다",
+      "막대그래프가 히스토그램보다 정확도가 높다"
+    ],
+    answer: 1,
+    fb: "<span class='key-point'>히스토그램</span>은 \"키, 시간, 나이\"처럼 <b>연속형 변수의 분포</b>를 구간(bin)별로 보여줍니다. <span class='key-point'>막대그래프</span>는 \"성별, 전공, 국가\"처럼 <b>범주형 변수의 빈도</b>를 비교합니다. 시각적으로 비슷해 보여도 데이터 타입과 목적이 다릅니다. (히스토그램은 막대 사이에 빈 공간이 없고, 막대그래프는 보통 빈 공간이 있습니다.)"
+  },
+
+  // Q13: 시간 → 선그래프 (중) — 춘천 관광
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 춘천 관광 분석가]</b> G씨가 \"<b>최근 10년간 연도별 관광객 수 변화</b>\"를 시각화하려 합니다. 가장 적절한 그래프는?</span>",
+    opts: [
+      "박스플롯",
+      "산점도",
+      "선 그래프 (line chart)",
+      "히트맵"
+    ],
+    answer: 2,
+    fb: "<span class='key-point'>시간의 흐름에 따른 변화는 선 그래프</span>가 정석입니다. X축에 연도, Y축에 관광객 수를 두면 추세(증가·감소·계절성)가 한눈에 보입니다. 박스플롯은 분포 비교, 산점도는 두 변수 관계, 히트맵은 두 범주 교차 분석에 적합합니다."
+  },
+
+  // Q14: 두 변수 → 산점도 (중) — UX 디자이너 SNS·수면
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — UX 디자이너]</b> J씨가 \"<b>하루 SNS 사용 시간\"과 \"수면 시간</b>\" 간의 <b>관계</b>를 시각적으로 탐색하려 합니다. 가장 적절한 그래프는?</span>",
+    opts: [
+      "막대그래프",
+      "히스토그램",
+      "박스플롯",
+      "산점도 (scatter plot)"
+    ],
+    answer: 3,
+    fb: "<span class='key-point'>두 개의 연속형 변수 간 관계 탐색 = 산점도</span>가 표준입니다. 점들이 우상향이면 양의 상관, 우하향이면 음의 상관, 무작위면 무상관입니다. 산점도는 상관·회귀 분석의 시각적 출발점이며, UX·헬스케어·교육 데이터에서 가장 빈번하게 사용됩니다."
+  },
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // SECTION 5: 범주형 & 관계 분석 (Q15-Q18)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // Q15: value_counts() 활용 (중) — 한류 크리에이터
+  {
+    section: "범주형 & 관계 분석",
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 한류 콘텐츠 크리에이터]</b> 인스타 팔로워 5만 명의 국가를 분석합니다. <span class='data-block'>df['country'].value_counts()</span> 결과: 한국 38%, 일본 22%, 동남아 18%, 미국 15%, 기타 7%. 이 결과를 활용하는 가장 적절한 방법은?</span>",
+    opts: [
+      "평균과 표준편차를 구해 \"평균 국가\"를 산출한다",
+      "상관 분석을 통해 국가 간 영향력을 측정한다",
+      "z-score 변환 후 정규분포 검정을 수행한다",
+      "빈도와 비율을 기반으로 일본어·영어 자막 우선 전략을 수립한다"
+    ],
+    answer: 3,
+    fb: "<span class='key-point'>국가(country)는 범주형(categorical) 변수</span>입니다. 평균·표준편차·z-score·상관은 모두 \"순서가 있거나 수치\"인 변수에만 의미가 있습니다. 범주형 변수는 <b>빈도와 비율(value_counts, mul(100).round(1))</b>로 분포를 보고, 그 결과를 의사결정(자막 언어 우선순위 등)에 활용합니다."
+  },
+
+  // Q16: 피벗 히트맵 (중) — 강원도 청년정책
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 강원도 청년정책 분석가]</b> X씨가 \"성별 × 전공\" 만족도 피벗 히트맵을 분석합니다. 진한 빨간색일수록 만족도가 높습니다. <span class='data-block'>Sociology × F = 3.53(가장 진한 빨강)</span>, <span class='data-block'>History × F = 2.63(옅음)</span>. 이 결과의 적절한 활용은?</span>",
+    opts: [
+      "전공 간 차이 가능성을 발견했으므로 추가 분석(t-검정 등)을 거쳐 정책 설계에 활용한다",
+      "Sociology 학생만을 정책 대상으로 즉시 결정한다",
+      "F와 M 그룹을 통합한 평균만 사용해 단순화한다",
+      "평균만 보고하면 충분하므로 추가 분석은 필요 없다"
+    ],
+    answer: 0,
+    fb: "<span class='key-point'>피벗 히트맵은 \"흥미로운 패턴 발견\"의 도구이지 \"결론 도구\"가 아닙니다.</span> 색 차이가 있다고 해서 그것이 통계적으로 유의미한지(t-검정), 표본이 충분한지(count 확인), 다른 변수의 영향은 없는지를 검증해야 합니다. 좋은 분석가는 시각화에서 가설을 얻고, 추론통계로 검증합니다."
+  },
+
+  // Q17: 상관 히트맵 음의 상관 (중) — 춘천 관광
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 춘천 관광 데이터 분석가]</b> 6개 변수의 상관 히트맵에서 <span class='data-block'>방문객수 × 강수량 = -0.72</span> (진한 파란색)으로 나타났습니다. 가장 적절한 해석은?</span>",
+    opts: [
+      "강수량이 많을수록 방문객도 많아진다 — 양의 강한 상관",
+      "두 변수는 서로 독립적이다 — 관련 없음",
+      "강수량이 방문객수 감소의 원인임이 증명되었다",
+      "강수량이 많을수록 방문객은 줄어든다 — 음의 강한 상관"
+    ],
+    answer: 3,
+    fb: "<span class='key-point'>상관계수가 음수(-)이고 절댓값이 0.7 이상이면 \"강한 음의 상관\"</span>입니다. 한 변수가 늘 때 다른 변수가 줄어드는 관계입니다. ⚠️ 단, <b>상관 ≠ 인과</b>! \"비가 와서 안 온 것\"인지, \"비 오는 시즌에 다른 요인이 작용한 것\"인지는 상관계수만으로는 알 수 없습니다(7주차 강조 사항)."
+  },
+
+  // Q18: 종속/독립변수 (상) — 강원도 청년
+  {
+    diff: "상",
+    text: "다음 연구 제목에서 종속변수와 독립변수를 올바르게 식별한 것은?<br><br><span class='scenario'>\"<b>강원도 청년의 SNS 사용시간이 정신건강 만족도에 미치는 영향</b>\"</span>",
+    opts: [
+      "독립변수: 정신건강 만족도 / 종속변수: SNS 사용시간",
+      "독립변수: 강원도 / 종속변수: 청년",
+      "독립변수: SNS 사용시간 / 종속변수: 정신건강 만족도",
+      "두 변수 모두 독립변수이며 종속변수는 없다"
+    ],
+    answer: 2,
+    fb: "<span class='key-point'>\"A가 B에 미치는 영향\" 형태의 연구 제목에서 A는 독립변수(원인), B는 종속변수(결과)</span>입니다. 또한 \"강원도\"·\"청년\"은 연구 대상(모집단)을 한정하는 정보일 뿐 변수가 아닙니다. 종속변수(만족도)는 수치형이어야 통계 분석이 가능합니다 — 5점 척도 등으로 측정합니다."
+  },
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // SECTION 6: IT 트렌드 — RAG (Q19-Q20)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // Q19: RAG 정의 (하)
+  {
+    section: "IT 트렌드 — RAG",
+    diff: "하",
+    text: "수업 자료에서 새로 배운 <b>RAG(Retrieval-Augmented Generation)</b>에 대한 가장 정확한 설명은?",
+    opts: [
+      "AI 모델이 학습한 기억만으로 즉시 답변을 생성하는 방식",
+      "AI가 더 빠르게 응답하도록 모델을 압축하는 기술",
+      "사람과 대화하면서 실시간으로 모델을 재학습시키는 강화학습 방식",
+      "외부 문서를 먼저 검색(Retrieval)한 뒤 그 내용을 근거로 답변을 생성(Generation)하는 방식"
+    ],
+    answer: 3,
+    fb: "RAG는 \"<span class='key-point'>찾아서 말하는 AI</span>\"입니다. 일반 LLM이 기억(학습한 것)에만 의존하는 것과 달리, RAG는 외부 문서·데이터베이스를 먼저 검색해서 그 내용을 근거로 답을 만듭니다. 정확성·신뢰성·근거 추적성을 높이는 구조입니다."
+  },
+
+  // Q20: RAG의 가치 (중) — 정책 기획자
+  {
+    diff: "중",
+    text: "<span class='scenario'><b>[시나리오 — 정책 기획자 지망생]</b> 김씨는 \"<b>글로벌 사회혁신실험 정책 동향</b>\" 보고서를 작성 중입니다. 일반 ChatGPT 답변은 출처가 모호하고 사실 확인이 어렵습니다. 이때 <b>RAG</b>를 활용했을 때 가장 큰 이점은?</span>",
+    opts: [
+      "관련 정책 보고서·논문을 검색해 근거 기반 답변을 받을 수 있다",
+      "답변 속도가 더 빨라진다",
+      "답변에 그래프와 이모지가 자동으로 추가된다",
+      "더 긴 분량의 답변을 받을 수 있다"
+    ],
+    answer: 0,
+    fb: "정책 문서·연구 보고서처럼 <span class='key-point'>근거의 출처가 중요한 영역</span>에서 RAG의 가치가 가장 큽니다. \"AI가 어디서 그 정보를 가져왔는지\" 추적할 수 있어야 정책 결정자가 신뢰할 수 있습니다. 속도·길이·이모지는 RAG의 본질과 무관합니다."
+  }
+];
+
+// ============================================
+// RENDER QUESTIONS (with section dividers)
+// ============================================
+function renderQuiz() {
+  var html = "";
+  for (var i = 0; i < questions.length; i++) {
+    var q = questions[i];
+    if (q.section) {
+      html += '<div class="section-divider">📊 ' + q.section + '</div>';
+    }
+    var labels = ["A", "B", "C", "D"];
+    var optsHtml = "";
+    for (var j = 0; j < q.opts.length; j++) {
+      optsHtml += '<div class="option" data-q="' + i + '" data-opt="' + j + '" onclick="selectOption(' + i + ',' + j + ')">'
+        + '<span class="option-label">' + labels[j] + '.</span>'
+        + '<span>' + q.opts[j] + '</span></div>';
+    }
+    html += '<div class="question" id="q' + i + '">'
+      + '<div class="q-header">'
+      + '<span class="q-num">Q' + (i+1) + ' / ' + questions.length + '</span>'
+      + '<span class="diff-badge diff-' + q.diff + '">' + q.diff + '</span></div>'
+      + '<div class="q-text">' + q.text + '</div>'
+      + '<div class="options">' + optsHtml + '</div>'
+      + '<div class="feedback" id="fb' + i + '"></div></div>';
+  }
+  document.getElementById("quizContainer").innerHTML = html;
+}
+
+var answers = {};
+function selectOption(qi, oi) {
+  if (document.getElementById("results").classList.contains("show")) return;
+  answers[qi] = oi;
+  var qBox = document.getElementById("q" + qi);
+  var opts = qBox.querySelectorAll(".option");
+  for (var k = 0; k < opts.length; k++) opts[k].classList.remove("selected");
+  opts[oi].classList.add("selected");
+}
+
+function submitQuiz() {
+  if (Object.keys(answers).length < questions.length) {
+    var ok = confirm("아직 모든 문항에 답하지 않았습니다. 그래도 채점하시겠습니까?");
+    if (!ok) return;
+  }
+  studentName = document.getElementById("studentNameInput").value.trim();
+
+  var correct = 0;
+  for (var i = 0; i < questions.length; i++) {
+    var q = questions[i];
+    var qBox = document.getElementById("q" + i);
+    var opts = qBox.querySelectorAll(".option");
+    var fb = document.getElementById("fb" + i);
+    var chosen = answers[i];
+    for (var k = 0; k < opts.length; k++) {
+      opts[k].onclick = null;
+      opts[k].style.cursor = "default";
+    }
+    if (chosen === q.answer) {
+      correct++;
+      opts[chosen].classList.remove("selected");
+      opts[chosen].classList.add("correct");
+      fb.className = "feedback ok show";
+      fb.innerHTML = "✓ 정답입니다. " + q.fb;
+    } else {
+      if (chosen !== undefined) opts[chosen].classList.add("wrong");
+      opts[q.answer].classList.add("correct");
+      fb.className = "feedback ng show";
+      fb.innerHTML = "✗ 정답은 <b>" + ["A","B","C","D"][q.answer] + "</b>번입니다. " + q.fb;
+    }
+  }
+
+  showResults(correct);
+  document.getElementById("submitBtn").style.display = "none";
+  saveResult(correct);
+  document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+}
+
+function showResults(correct) {
+  var total = questions.length;
+  var pct = Math.round(correct / total * 100);
+  document.getElementById("bigScore").textContent = pct + "%";
+  document.getElementById("scoreLabel").textContent = total + "문항 중 " + correct + "개 정답";
+  document.getElementById("bdCorrect").textContent = correct;
+  document.getElementById("bdWrong").textContent = total - correct;
+
+  var grade, msg;
+  if (pct >= 90) {
+    grade = "A — 통계 마스터";
+    msg = "10주차의 모든 핵심 개념을 확실히 이해했습니다. 11주차 추론통계도 자신 있게 시작할 수 있겠어요!";
+  } else if (pct >= 70) {
+    grade = "B — 잘하고 있어요";
+    msg = "기술통계의 핵심을 잘 파악하고 있습니다. 틀린 문항의 해설을 한 번 더 읽고 다음 주 추론통계로 진입하세요.";
+  } else if (pct >= 50) {
+    grade = "C — 더 다져봅시다";
+    msg = "기본 개념은 잡혀 있지만 응용 부분에서 헷갈리는 게 있어요. 박스플롯·왜도/첨도 시각화 자료를 한 번 더 보세요.";
+  } else {
+    grade = "D — 복습 필요";
+    msg = "왜도·첨도·결측치·박스플롯은 추론통계의 전제 조건입니다. 10주차 PPT와 코랩 노트북을 다시 한 번 훑어보세요.";
+  }
+  document.getElementById("gradeBox").textContent = grade;
+  document.getElementById("resultMsg").innerHTML = msg;
+  document.getElementById("results").classList.add("show");
+}
+
+// ============================================
+// SAVE TO GOOGLE SHEETS (Apps Script)
+// ============================================
+function saveResult(correct) {
+  var wrap = document.getElementById("saveStatusWrap");
+  if (!studentName) {
+    wrap.innerHTML = '<span style="color:#999">이름 미입력 — 결과는 저장되지 않았습니다.</span>';
+    return;
+  }
+  if (!SCRIPT_URL || SCRIPT_URL === "YOUR_APPS_SCRIPT_URL") {
+    wrap.innerHTML = '<span style="color:#999">(교수자: Apps Script URL을 설정해주세요)</span>';
+    return;
+  }
+  wrap.innerHTML = '<span style="color:#666">결과 저장 중...</span>';
+  var payload = {
+    week: WEEK_ID,
+    name: studentName,
+    score: correct,
+    total: questions.length,
+    percent: Math.round(correct / questions.length * 100),
+    timestamp: new Date().toISOString()
+  };
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).then(function() {
+    wrap.innerHTML = '<span class="save-ok">✓ 결과가 저장되었습니다.</span>';
+  }).catch(function() {
+    wrap.innerHTML = '<span class="save-fail">⚠ 저장 실패 — 네트워크를 확인하세요.</span>';
+  });
+}
+
+function resetQuiz() {
+  answers = {};
+  document.getElementById("results").classList.remove("show");
+  document.getElementById("submitBtn").style.display = "inline-block";
+  renderQuiz();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Init
+renderQuiz();
+</script>
+</body>
+</html>
