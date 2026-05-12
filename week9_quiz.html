@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 9 퀴즈 — 기술통계 I</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --bg-soft:#1e293b;
+    --panel:#ffffff;
+    --panel-soft:#f8fafc;
+    --border:#e2e8f0;
+    --ink:#0f172a;
+    --ink-soft:#475569;
+    --ink-mute:#94a3b8;
+    --brand:#2563eb;
+    --brand-soft:#dbeafe;
+    --brand-deep:#1d4ed8;
+    --ok:#16a34a;
+    --ok-soft:#dcfce7;
+    --bad:#dc2626;
+    --bad-soft:#fee2e2;
+    --warn:#d97706;
+    --warn-soft:#fef3c7;
+    --accent:#7c3aed;
+    --shadow:0 10px 30px rgba(15,23,42,.08), 0 2px 8px rgba(15,23,42,.05);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 40%,#fef3c7 100%);min-height:100vh;color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic','Segoe UI',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 20px 80px}
+
+  /* ===== Header ===== */
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--bg);color:#fff;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.5px}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:#fbbf24}
+  header h1{font-size:36px;font-weight:800;margin:18px 0 10px;letter-spacing:-.5px}
+  header .sub{color:var(--ink-soft);font-size:16px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:10px}
+  .back-link{color:var(--brand);text-decoration:none;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--brand-soft);border-radius:999px;transition:all .2s}
+  .back-link:hover{background:var(--brand);color:#fff;transform:translateX(-2px)}
+  .score-chip{background:var(--panel);border:1px solid var(--border);padding:8px 16px;border-radius:999px;font-weight:600;font-size:14px;box-shadow:var(--shadow)}
+  .score-chip span{color:var(--brand)}
+
+  /* ===== Name screen ===== */
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow)}
+  .name-screen h2{font-size:24px;margin-bottom:12px}
+  .name-screen p{color:var(--ink-soft);margin-bottom:24px}
+  .name-input{width:100%;padding:14px 18px;font-size:16px;border:2px solid var(--border);border-radius:12px;font-family:inherit;transition:border .2s}
+  .name-input:focus{outline:none;border-color:var(--brand)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;font-size:16px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all .2s;font-family:inherit}
+  .btn-primary{background:var(--brand);color:#fff;margin-top:18px}
+  .btn-primary:hover{background:var(--brand-deep);transform:translateY(-1px);box-shadow:0 8px 16px rgba(37,99,235,.25)}
+  .btn-secondary{background:var(--panel-soft);color:var(--ink);border:1px solid var(--border)}
+  .btn-secondary:hover{background:#fff;border-color:var(--brand);color:var(--brand)}
+
+  /* ===== Intro ===== */
+  .intro-card{background:var(--panel);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);margin-bottom:24px;border-left:6px solid var(--brand)}
+  .intro-card .tag{display:inline-block;background:var(--brand-soft);color:var(--brand-deep);padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:14px}
+  .intro-card h2{font-size:26px;margin-bottom:10px;letter-spacing:-.3px}
+  .intro-card .desc{color:var(--ink-soft);margin-bottom:18px}
+  .alert{background:var(--warn-soft);border-left:4px solid var(--warn);padding:14px 18px;border-radius:8px;font-size:14px;margin-bottom:6px}
+  .alert b{color:#92400e}
+  .badges{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .badge{background:var(--panel-soft);border:1px solid var(--border);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+  .badge b{color:var(--ink);font-size:15px}
+
+  /* ===== Question ===== */
+  .q-card{background:var(--panel);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-bottom:18px;border:1px solid var(--border)}
+  .q-num{display:inline-block;background:var(--bg);color:#fff;font-weight:700;padding:4px 12px;border-radius:6px;font-size:13px;margin-bottom:12px}
+  .q-text{font-size:17px;font-weight:600;margin-bottom:18px;line-height:1.55}
+  .q-text code{background:#f1f5f9;padding:2px 8px;border-radius:4px;font-family:'D2Coding','Consolas',monospace;font-size:15px;color:#7c3aed}
+  .opt{display:block;width:100%;text-align:left;background:var(--panel-soft);border:2px solid var(--border);padding:14px 18px;margin-bottom:10px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:15px;transition:all .15s;color:var(--ink)}
+  .opt:hover:not(:disabled){border-color:var(--brand);background:#fff;transform:translateX(2px)}
+  .opt:disabled{cursor:default}
+  .opt .num{display:inline-block;width:24px;height:24px;background:#e2e8f0;border-radius:50%;text-align:center;line-height:24px;font-weight:700;font-size:13px;margin-right:10px;color:var(--ink-soft)}
+  .opt.correct{background:var(--ok-soft);border-color:var(--ok);color:#14532d}
+  .opt.correct .num{background:var(--ok);color:#fff}
+  .opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:#7f1d1d}
+  .opt.wrong .num{background:var(--bad);color:#fff}
+  .opt.dimmed{opacity:.45}
+  .explain{margin-top:14px;padding:16px 18px;background:#f1f5f9;border-radius:10px;font-size:14px;color:var(--ink-soft);line-height:1.65;display:none;border-left:4px solid var(--brand)}
+  .explain.show{display:block;animation:fadeIn .3s ease}
+  .explain b{color:var(--ink)}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ===== Final ===== */
+  .final{background:linear-gradient(135deg,#1e293b 0%,#7c3aed 100%);color:#fff;border-radius:var(--radius);padding:40px;text-align:center;box-shadow:var(--shadow);display:none}
+  .final.show{display:block;animation:fadeIn .4s ease}
+  .final h2{font-size:30px;margin-bottom:8px}
+  .final .name-greet{font-size:16px;opacity:.9;margin-bottom:20px}
+  .final .score-big{font-size:64px;font-weight:800;margin:14px 0;letter-spacing:-2px}
+  .final .grade{display:inline-block;padding:6px 18px;background:rgba(255,255,255,.2);border-radius:999px;font-size:14px;font-weight:600;margin-bottom:24px}
+  .final .stats{display:flex;justify-content:center;gap:30px;margin:24px 0;flex-wrap:wrap}
+  .final .stat{text-align:center}
+  .final .stat .v{font-size:28px;font-weight:800}
+  .final .stat .l{font-size:12px;opacity:.8;text-transform:uppercase;letter-spacing:1px}
+  .final .actions{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+  .final .btn-primary{background:#fff;color:var(--bg)}
+  .final .btn-primary:hover{background:#fbbf24;color:var(--bg)}
+  .final .btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)}
+  .final .btn-secondary:hover{background:rgba(255,255,255,.25);color:#fff}
+
+  footer{text-align:center;color:var(--ink-mute);font-size:13px;margin-top:40px;padding-top:20px;border-top:1px solid var(--border)}
+
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== Name Entry Screen ===== -->
+  <section id="name-screen">
+    <div class="topbar">
+      <span class="pill"><span class="dot"></span>지역혁신연구방법론 · WEEK 9</span>
+    </div>
+    <div class="card name-screen">
+      <h2>퀴즈 시작 전 이름을 입력하세요</h2>
+      <p>입력한 이름과 점수가 기록됩니다.<br>정확하게 입력해 주세요.</p>
+      <input type="text" id="studentName" class="name-input" placeholder="이름을 입력해 주세요." maxlength="20">
+      <br>
+      <button class="btn btn-primary" onclick="startQuiz()">퀴즈 시작하기 →</button>
+    </div>
+  </section>
+
+  <!-- ===== Quiz Screen ===== -->
+  <section id="quiz-screen" class="hidden">
+    <div class="topbar">
+      <span class="pill"><span class="dot"></span>지역혁신연구방법론 · WEEK 9</span>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="score-chip">점수 <span id="score">0</span> / <span id="total">0</span></span>
+        <a class="back-link" href="index.html">← 목차로</a>
+      </div>
+    </div>
+
+    <header>
+      <h1>기술통계 I — 평균·분산·분포</h1>
+      <p class="sub" id="greeting">Python pandas로 데이터를 다루기 전, 꼭 알아야 할 기술통계 핵심 개념</p>
+    </header>
+
+    <div class="intro-card">
+      <span class="tag">QUIZ · WEEK 9 · 기술통계 I</span>
+      <h2>설문조사 데이터를 다루기 위한 기초 통계</h2>
+      <p class="desc">대학생 AI 인식 조사(<code>survey_sample.csv</code>) 맥락에서 가장 중요한 개념을 선별했습니다. 보기를 클릭하면 즉시 정답과 해설이 표시됩니다.</p>
+      <div class="alert">
+        ⚠️ <b>특히 주의:</b> 측정척도 4종(명목·순서·등간·비율), 평균/중앙값/최빈값의 위치 관계, 사분위수와 IQR을 활용한 이상치 탐지 — 이 3가지가 통계 검정의 기초입니다.
+      </div>
+      <div class="badges">
+        <span class="badge"><b>20</b> 문항</span>
+        <span class="badge"><b>4지선다</b></span>
+        <span class="badge"><b>즉시 피드백</b></span>
+      </div>
+    </div>
+
+    <div id="quiz-list"></div>
+
+    <!-- Final screen -->
+    <div class="final" id="final">
+      <h2>🎉 퀴즈 완료!</h2>
+      <div class="name-greet" id="final-name"></div>
+      <div class="score-big"><span id="final-score">0</span> / 20</div>
+      <div class="grade" id="final-grade">—</div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="final-correct">0</div><div class="l">정답</div></div>
+        <div class="stat"><div class="v" id="final-wrong">0</div><div class="l">오답</div></div>
+        <div class="stat"><div class="v" id="final-pct">0%</div><div class="l">정답률</div></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="restart()">🔄 다시 풀기</button>
+        <a class="btn btn-secondary" href="index.html">목차로 →</a>
+      </div>
+    </div>
+
+    <footer>지역혁신연구방법론 2026-1 · Week 9 · 기술통계 I · Hallym University</footer>
+  </section>
+
+</div>
+
+<script>
+/* ===== Question Bank ===== */
+const QUESTIONS = [
+  {
+    q: "기술통계(descriptive statistics)에 대한 설명으로 <b>가장 적절한</b> 것은?",
+    opts:[
+      "표본 데이터를 활용해 모집단의 특성을 추론하는 분석이다",
+      "수집한 데이터를 숫자와 그래프로 요약하여 전체적 패턴을 파악하는 분석이다",
+      "두 집단의 평균 차이를 통계적으로 검정하는 분석이다",
+      "변수 간 인과관계를 밝히는 분석이다"
+    ],
+    a:1,
+    exp:"<b>기술통계</b>는 데이터를 압축된 형태로 요약하여 전체적 패턴을 가장 먼저 파악하는 단계입니다. ①은 추론통계, ③은 t-검정/ANOVA, ④는 회귀·실험설계에 해당합니다. 기술통계는 모든 통계 검정의 전제 조건입니다."
+  },
+  {
+    q: "다음 중 <b>측정척도와 예시</b>의 연결이 <u>잘못된</u> 것은?",
+    opts:[
+      "명목척도 — 성별, 전공",
+      "순서척도 — 만족도(1~5점 Likert)",
+      "등간척도 — 키, 몸무게, 시험 점수(100점 만점)",
+      "비율척도 — 시간, 거리"
+    ],
+    a:2,
+    exp:"키·몸무게·100점 만점 시험점수는 <b>절대적 0이 존재</b>하므로 <b>비율척도</b>입니다. 등간척도는 절대적 0이 없는 IQ, 표준점수(수능, SAT), 온도(℃) 등이 해당합니다. 척도 구분은 분석 기법 선택의 출발점입니다."
+  },
+  {
+    q: "<code>학년(1, 2, 3, 4)</code> 변수에 대해 평균을 계산하는 것이 부적절한 이유로 <b>가장 적절한</b> 것은?",
+    opts:[
+      "데이터 개수가 적기 때문에",
+      "학년은 범주형(순서형) 변수이므로 '평균 2.5학년'과 같은 값이 실질적 의미를 갖지 않기 때문에",
+      "정수만 가지므로 평균 계산이 수학적으로 불가능하기 때문에",
+      "결측치가 많기 때문에"
+    ],
+    a:1,
+    exp:"학년은 숫자처럼 보이지만 본질적으로 <b>범주(순서형)</b>입니다. 2학년과 3학년의 평균이 '2.5학년'이라는 표현은 실질적으로 의미가 없습니다. 강의에서 강조된 '흔한 실수'입니다."
+  },
+  {
+    q: "Python으로 CSV 파일을 불러올 때 가장 일반적으로 사용하는 코드는?",
+    opts:[
+      "<code>df = pd.load_csv('data.csv')</code>",
+      "<code>df = pd.open_csv('data.csv')</code>",
+      "<code>df = pd.read_csv('data.csv')</code>",
+      "<code>df = pd.import_csv('data.csv')</code>"
+    ],
+    a:2,
+    exp:"<b><code>pd.read_csv()</code></b>가 표준입니다. 한글 인코딩 에러가 발생하면 <code>encoding='utf-8-sig'</code> 옵션을 추가하면 됩니다. <code>df</code>는 DataFrame(표 형태 데이터)을 담는 변수입니다."
+  },
+  {
+    q: "<code>df.info()</code>로 확인할 수 <u>없는</u> 정보는?",
+    opts:[
+      "변수의 데이터 타입(int/float/object)",
+      "결측치(non-null) 개수",
+      "전체 행/열 개수와 메모리 사용량",
+      "변수 간 상관계수"
+    ],
+    a:3,
+    exp:"<b>상관계수</b>는 <code>df.corr()</code>로 계산합니다. <code>info()</code>는 데이터 구조 파악(타입, 결측 여부, 크기) 단계에서 사용하는 함수입니다."
+  },
+  {
+    q: "<code>df.describe()</code>의 결과에 <b>포함되지 않는</b> 통계량은?",
+    opts:[
+      "평균(mean)과 표준편차(std)",
+      "최솟값(min), 최댓값(max)",
+      "최빈값(mode)",
+      "사분위수(25%, 50%, 75%)"
+    ],
+    a:2,
+    exp:"<code>describe()</code>는 count, mean, std, min, 25%(Q1), 50%(중앙값), 75%(Q3), max를 출력합니다. <b>최빈값(mode)</b>은 별도로 <code>df['col'].mode()</code>로 구합니다."
+  },
+  {
+    q: "평균(mean)의 한계점으로 <b>가장 적절한</b> 것은?",
+    opts:[
+      "계산이 복잡하다",
+      "데이터 개수가 많을수록 부정확해진다",
+      "극단값(이상치)의 영향을 크게 받는다",
+      "범주형 데이터에서 계산할 수 있다"
+    ],
+    a:2,
+    exp:"평균은 모든 값을 반영하기 때문에 <b>극단값에 민감</b>합니다. 예) 만족도 점수에 1점이 소수 섞이면 평균이 끌어내려집니다. 이 경우 중앙값이 더 안정적인 대푯값입니다."
+  },
+  {
+    q: "다음 중 <b>중앙값(median)</b>을 평균보다 우선 사용해야 할 상황은?",
+    opts:[
+      "데이터가 좌우 대칭의 정규분포를 따를 때",
+      "표본 크기가 매우 클 때",
+      "데이터에 이상치가 많거나 분포가 한쪽으로 치우쳐 있을 때",
+      "변수가 명목척도일 때"
+    ],
+    a:2,
+    exp:"중앙값은 <b>이상치와 비대칭 분포</b>에 강합니다. 예: 소득 데이터처럼 우편향이 심한 자료에서는 평균보다 중앙값이 '전형적인 값'을 더 잘 보여줍니다."
+  },
+  {
+    q: "정규분포(좌우 대칭)에서 평균(mean)·중앙값(median)·최빈값(mode)의 관계로 <b>옳은</b> 것은?",
+    opts:[
+      "평균 = 중앙값 = 최빈값",
+      "평균 > 중앙값 > 최빈값",
+      "최빈값 > 중앙값 > 평균",
+      "예측할 수 없다"
+    ],
+    a:0,
+    exp:"<b>완전한 정규분포에서는 세 값이 일치</b>합니다. 우측 왜도(positive skew, 꼬리가 오른쪽)에서는 <b>평균 > 중앙값 > 최빈값</b>, 좌측 왜도에서는 <b>최빈값 > 중앙값 > 평균</b>입니다."
+  },
+  {
+    q: "표준편차(standard deviation)에 대한 설명으로 <b>옳지 않은</b> 것은?",
+    opts:[
+      "분산의 제곱근으로 계산된다",
+      "값이 작을수록 데이터가 평균 주변에 모여 있다",
+      "원래 데이터와 같은 단위로 해석된다",
+      "표준편차가 0이면 분포가 정규분포라는 의미이다"
+    ],
+    a:3,
+    exp:"표준편차 = 0은 <b>모든 값이 평균과 같다(변동이 전혀 없다)</b>는 뜻이지, 정규분포와는 무관합니다. 표준편차가 클수록 응답자 간 의견 차이가 크고, 작을수록 의견이 일치된다고 해석합니다."
+  },
+  {
+    q: "데이터 <code>[3, 4, 4, 4, 5, 5]</code>의 표본분산을 구하는 공식으로 <b>옳은</b> 것은? (n=표본 크기)",
+    opts:[
+      "Σ(x − μ)² / n",
+      "Σ(x − μ)² / (n − 1)",
+      "Σ|x − μ| / n",
+      "√(Σx² / n)"
+    ],
+    a:1,
+    exp:"<b>표본분산</b>은 자유도 <b>n−1</b>로 나눕니다. 자유도를 사용하는 이유는 표본을 이용해 모분산을 추정할 때 편향을 보정하기 위함입니다(Bessel's correction). 모분산은 n으로 나눕니다."
+  },
+  {
+    q: "사분위수에 대한 설명으로 <b>옳지 않은</b> 것은?",
+    opts:[
+      "Q1은 하위 25% 지점의 값이다",
+      "Q2는 중앙값과 같다",
+      "Q3는 상위 25% 지점, 즉 75 백분위수이다",
+      "IQR = Q1 − Q3 로 계산된다"
+    ],
+    a:3,
+    exp:"<b>IQR = Q3 − Q1</b>입니다(상위에서 하위를 뺍니다). IQR은 데이터 중앙 50%의 범위를 나타내며, 박스플롯의 상자 길이에 해당합니다."
+  },
+  {
+    q: "IQR 방법으로 이상치를 탐지할 때, <b>이상치 경계</b>를 계산하는 공식은?",
+    opts:[
+      "하한 = Q1 − 1.0×IQR, 상한 = Q3 + 1.0×IQR",
+      "하한 = Q1 − 1.5×IQR, 상한 = Q3 + 1.5×IQR",
+      "하한 = 평균 − 2×표준편차, 상한 = 평균 + 2×표준편차",
+      "하한 = 최솟값, 상한 = 최댓값"
+    ],
+    a:1,
+    exp:"표준적 IQR 규칙은 <b>1.5×IQR</b>입니다. 더 엄격한 기준(3×IQR)은 'extreme outlier'로 분류합니다. ③은 표준편차 기반 방법으로 정규분포를 가정하므로 비대칭 분포에서는 부적절합니다."
+  },
+  {
+    q: "박스플롯(box plot)의 구성 요소에 대한 설명으로 <b>옳은</b> 것은?",
+    opts:[
+      "박스 안의 선은 평균(mean)을 나타낸다",
+      "박스 안의 선은 중앙값(median)을, 박스의 크기는 IQR을 나타낸다",
+      "수염(whisker)의 끝은 최솟값과 최댓값을 항상 보여준다",
+      "박스 아래 위 가장자리는 Q1과 Q2 지점이다"
+    ],
+    a:1,
+    exp:"박스 안 선 = <b>중앙값(Q2)</b>, 박스 아래/위 = Q1/Q3, 박스 크기 = <b>IQR</b>. 수염은 일반적으로 Q1−1.5IQR ~ Q3+1.5IQR 범위까지만 그리며, 그 밖의 점은 <b>이상치</b>로 표시됩니다."
+  },
+  {
+    q: "다음 분포 형태와 평균·중앙값·최빈값 위치의 연결로 <b>옳은</b> 것은?",
+    opts:[
+      "우측 왜도(right skew): 평균 < 중앙값 < 최빈값",
+      "좌측 왜도(left skew): 평균 < 중앙값 < 최빈값",
+      "좌측 왜도(left skew): 최빈값 < 중앙값 < 평균",
+      "정규분포: 최빈값 < 중앙값 < 평균"
+    ],
+    a:1,
+    exp:"<b>좌측 왜도</b>(꼬리가 왼쪽)에서는 평균이 꼬리에 끌려 작아지므로 <b>평균 < 중앙값 < 최빈값</b>. <b>우측 왜도</b>에서는 반대로 <b>최빈값 < 중앙값 < 평균</b>. 평균이 꼬리 방향으로 끌려간다고 기억하면 쉽습니다."
+  },
+  {
+    q: "히스토그램(histogram)의 주된 용도로 <b>가장 적절한</b> 것은?",
+    opts:[
+      "두 변수의 관계(상관)를 시각적으로 확인한다",
+      "범주형 변수의 빈도를 비교한다",
+      "수치형 변수의 분포 형태(중심, 퍼짐, 치우침)를 확인한다",
+      "결측치의 위치를 표시한다"
+    ],
+    a:2,
+    exp:"히스토그램은 수치형 변수의 <b>분포 형태</b>를 보는 데 최적입니다. ①은 산점도, ②는 막대그래프(bar chart), ④는 결측치 매트릭스(<code>missingno</code>)에 해당합니다."
+  },
+  {
+    q: "강의에서 제시한 결측치 처리 기준으로 <b>옳은</b> 것은?",
+    opts:[
+      "결측치가 1%만 있어도 항상 평균값으로 대체해야 한다",
+      "결측치 5% 미만이면 삭제 가능, 10% 이상이면 대체(imputation) 고려",
+      "결측치는 무조건 삭제한다",
+      "결측치는 분석에 영향을 주지 않으므로 무시한다"
+    ],
+    a:1,
+    exp:"강의에서 제시된 기준: <b>5% 미만 → 삭제 가능, 10% 이상 → 대체 고려</b>. 수치형은 중앙값(이상치에 강건), 범주형은 최빈값으로 대체하는 것이 일반적입니다."
+  },
+  {
+    q: "인문사회 분야 설문 데이터(Likert 척도)의 특징으로 <b>옳지 않은</b> 것은?",
+    opts:[
+      "사회적 바람직성 편향으로 응답이 4~5점에 몰리는 경향이 있다",
+      "주관적 경험을 숫자로 변환하므로 사람마다 기준이 다를 수 있다",
+      "1점·5점 같은 극단값은 상대적으로 적게 나타나는 경향이 있다",
+      "물리적 측정과 마찬가지로 완벽한 정규분포를 따른다"
+    ],
+    a:3,
+    exp:"인문사회 데이터는 <b>완벽한 정규분포를 따르지 않는</b> 경우가 많습니다(천장효과, 바닥효과, 사회적 바람직성 편향). 통계 검정 전 항상 분포를 시각화해 확인해야 합니다."
+  },
+  {
+    q: "두 변수 간 상관계수(correlation coefficient) <i>r</i>에 대한 설명으로 <b>옳지 않은</b> 것은?",
+    opts:[
+      "r = +1에 가까울수록 강한 양의 선형 관계를 의미한다",
+      "r = 0은 두 변수 간 선형 관계가 없음을 의미한다",
+      "r = −0.85는 r = +0.85보다 약한 관계이다",
+      "상관관계가 있다고 해서 인과관계가 있는 것은 아니다"
+    ],
+    a:2,
+    exp:"상관계수의 <b>강도는 절댓값</b>으로 판단합니다. r = −0.85와 r = +0.85는 <b>같은 강도</b>이며, 방향만 반대입니다. 일반 기준: |r|<0.3 약함, 0.3~0.7 중간, ≥0.7 강함."
+  },
+  {
+    q: "다음 중 통계 분석 프로세스 7단계의 <b>순서</b>로 가장 적절한 것은?",
+    opts:[
+      "데이터 불러오기 → 통계 검정 → 구조 확인 → 시각화 → 기술통계 → 결측 점검 → 해석",
+      "데이터 불러오기 → 구조 확인 → 결측·이상치 점검 → 기술통계 계산 → 시각화 → 통계 검정 → 해석 및 보고",
+      "시각화 → 데이터 불러오기 → 통계 검정 → 결측 점검 → 기술통계 → 구조 확인 → 해석",
+      "통계 검정 → 데이터 불러오기 → 구조 확인 → 기술통계 → 시각화 → 결측 점검 → 해석"
+    ],
+    a:1,
+    exp:"강의에서 제시한 표준 순서: <b>① 불러오기 → ② 구조 확인 → ③ 결측·이상치 점검 → ④ 기술통계 → ⑤ 시각화 → ⑥ 통계 검정 → ⑦ 해석·보고</b>. 특히 ③↔④↔⑤는 데이터 품질을 다듬기 위해 수십 차례 반복됩니다."
+  }
+];
+
+/* ===== State ===== */
+let studentName = "";
+let answered = 0;
+let correct = 0;
+const TOTAL = QUESTIONS.length;
+
+/* ===== Start ===== */
+function startQuiz(){
+  const v = document.getElementById('studentName').value.trim();
+  if(!v){ alert("이름을 입력해 주세요."); return; }
+  studentName = v;
+  document.getElementById('name-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  document.getElementById('greeting').textContent = `${studentName}님, 보기를 클릭하면 즉시 정답·해설이 표시됩니다. (총 ${TOTAL}문항)`;
+  document.getElementById('total').textContent = TOTAL;
+  renderQuestions();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ===== Render ===== */
+function renderQuestions(){
+  const list = document.getElementById('quiz-list');
+  list.innerHTML = '';
+  QUESTIONS.forEach((Q, i)=>{
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `q-${i}`;
+    card.innerHTML = `
+      <span class="q-num">Q${i+1}</span>
+      <div class="q-text">${Q.q}</div>
+      <div class="opts">
+        ${Q.opts.map((opt,j)=>`
+          <button class="opt" data-i="${i}" data-j="${j}">
+            <span class="num">${['①','②','③','④'][j]}</span>${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="explain" id="exp-${i}"><b>해설.</b> ${Q.exp}</div>
+    `;
+    list.appendChild(card);
+  });
+  // Bind
+  document.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>handleAnswer(btn));
+  });
+}
+
+/* ===== Answer ===== */
+function handleAnswer(btn){
+  const i = +btn.dataset.i;
+  const j = +btn.dataset.j;
+  const Q = QUESTIONS[i];
+  const card = document.getElementById(`q-${i}`);
+  if(card.dataset.done) return;
+  card.dataset.done = "1";
+
+  const opts = card.querySelectorAll('.opt');
+  opts.forEach((o, k)=>{
+    o.disabled = true;
+    if(k === Q.a) o.classList.add('correct');
+    else if(k === j) o.classList.add('wrong');
+    else o.classList.add('dimmed');
+  });
+
+  if(j === Q.a) correct++;
+  answered++;
+  document.getElementById('score').textContent = correct;
+  document.getElementById('exp-' + i).classList.add('show');
+
+  if(answered === TOTAL){
+    setTimeout(showFinal, 600);
+  }
+}
+
+/* ===== Final ===== */
+function showFinal(){
+  const f = document.getElementById('final');
+  const wrong = TOTAL - correct;
+  const pct = Math.round(correct / TOTAL * 100);
+  let grade = "";
+  if(pct >= 90) grade = "🏆 A · 최우수 (Excellent)";
+  else if(pct >= 80) grade = "🌟 B · 우수 (Great)";
+  else if(pct >= 70) grade = "✨ C · 양호 (Good)";
+  else if(pct >= 60) grade = "📚 D · 보통 (Fair)";
+  else grade = "💪 F · 재학습 권장 (Need Review)";
+
+  document.getElementById('final-name').textContent = `${studentName}님의 결과`;
+  document.getElementById('final-score').textContent = correct;
+  document.getElementById('final-correct').textContent = correct;
+  document.getElementById('final-wrong').textContent = wrong;
+  document.getElementById('final-pct').textContent = pct + "%";
+  document.getElementById('final-grade').textContent = grade;
+
+  f.classList.add('show');
+  f.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ===== Restart ===== */
+function restart(){
+  answered = 0; correct = 0;
+  document.getElementById('score').textContent = "0";
+  document.getElementById('final').classList.remove('show');
+  renderQuestions();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* Enter key to start */
+document.getElementById('studentName').addEventListener('keydown', e=>{
+  if(e.key === 'Enter') startQuiz();
+});
+</script>
+</body>
+</html>
