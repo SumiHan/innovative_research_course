@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W11 추론통계 I — 지역혁신연구방법론 퀴즈</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    margin: 0; padding: 30px 16px; color: #2c3e50; line-height: 1.65;
+    min-height: 100vh;
+  }
+  main { max-width: 820px; margin: 0 auto; }
+
+  /* ── 이름 입력 오버레이 ── */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(26,58,143,0.55);
+    display: flex; align-items: center; justify-content: center; z-index: 50; padding: 20px;
+  }
+  .overlay-card {
+    background: #fff; border-radius: 16px; padding: 34px 30px; max-width: 420px; width: 100%;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2); text-align: center;
+  }
+  .overlay-card h2 { margin: 0 0 6px; font-size: 21px; color: #6c5ce7; }
+  .overlay-card p { color: #7f8c8d; font-size: 13.5px; margin: 0 0 20px; }
+  .overlay-card input {
+    width: 100%; padding: 13px 14px; font-size: 15px; border: 2px solid #dfe4ea;
+    border-radius: 10px; outline: none; margin-bottom: 14px; font-family: inherit;
+  }
+  .overlay-card input:focus { border-color: #6c5ce7; }
+  .btn {
+    background: #6c5ce7; color: #fff; border: none; padding: 13px 20px; width: 100%;
+    border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: background .2s;
+  }
+  .btn:hover { background: #5a4bd1; }
+
+  /* ── 헤더 ── */
+  .header {
+    background: #fff; border-radius: 16px; padding: 26px 30px; margin-bottom: 18px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06); text-align: center;
+  }
+  .course-tag {
+    display: inline-block; background: #6c5ce7; color: #fff; padding: 4px 14px;
+    border-radius: 18px; font-size: 11.5px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  h1 { margin: 4px 0 6px; font-size: 24px; }
+  .subtitle { color: #7f8c8d; font-size: 13.5px; }
+  .hello { margin-top: 10px; font-size: 13px; color: #6c5ce7; font-weight: 600; }
+
+  /* ── 진행바 ── */
+  .progress-wrap {
+    background: #fff; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05); position: sticky; top: 10px; z-index: 10;
+  }
+  .progress-top { display: flex; justify-content: space-between; font-size: 12.5px; color: #7f8c8d; margin-bottom: 7px; }
+  .progress-bar { height: 8px; background: #eef1f6; border-radius: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#6c5ce7,#a29bfe); transition: width .35s; }
+
+  /* ── 섹션 제목 ── */
+  .section-title {
+    font-size: 15px; color: #6c5ce7; font-weight: 700; margin: 24px 0 10px 2px;
+    padding-left: 10px; border-left: 4px solid #6c5ce7;
+  }
+
+  /* ── 문항 카드 ── */
+  .q-card {
+    background: #fff; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  }
+  .q-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tag { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 600; }
+  .tag.role { background: #f0f4ff; color: #5c6bc0; }
+  .tag.local { background: #e3f7ec; color: #1b9e5a; }
+  .tag.global { background: #fff0e6; color: #e8590c; }
+  .q-num { color: #6c5ce7; font-weight: 800; margin-right: 6px; }
+  .q-scenario { font-size: 13.5px; color: #555; background: #f8f9fc; border-radius: 8px; padding: 11px 13px; margin-bottom: 12px; }
+  .q-text { font-size: 15.5px; font-weight: 700; margin-bottom: 14px; }
+  .opt {
+    border: 2px solid #eef1f6; border-radius: 10px; padding: 12px 14px; margin-bottom: 9px;
+    cursor: pointer; font-size: 14px; transition: all .15s; display: flex; gap: 9px;
+  }
+  .opt:hover { border-color: #c3c0f0; background: #fafaff; }
+  .opt .letter { font-weight: 800; color: #6c5ce7; flex-shrink: 0; }
+  .opt.correct { border-color: #1b9e5a; background: #eafaf1; }
+  .opt.wrong { border-color: #e74c3c; background: #fdeeec; }
+  .opt.disabled { cursor: default; pointer-events: none; }
+  .explain {
+    margin-top: 8px; font-size: 13px; color: #34495e; background: #f4f6fb;
+    border-left: 3px solid #6c5ce7; border-radius: 6px; padding: 10px 12px; display: none;
+  }
+  .explain.show { display: block; }
+
+  /* ── 결과 ── */
+  .result {
+    background: #fff; border-radius: 16px; padding: 32px 28px; text-align: center;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08); display: none; margin-top: 8px;
+  }
+  .result.show { display: block; }
+  .grade-badge { font-size: 52px; font-weight: 800; margin: 6px 0; }
+  .score-line { font-size: 16px; color: #555; margin-bottom: 16px; }
+  .save-status { font-size: 13px; margin-top: 12px; padding: 9px; border-radius: 8px; }
+  .save-status.saving { background: #fff8e1; color: #b8860b; }
+  .save-status.saved { background: #eafaf1; color: #1b9e5a; }
+  .save-status.save-err { background: #fdeeec; color: #e74c3c; }
+
+  .footer { text-align: center; margin-top: 30px; color: #8a8a8a; font-size: 12px; }
+  .submit-btn { margin-top: 18px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- 이름 입력 오버레이 -->
+<div class="overlay" id="nameOverlay">
+  <div class="overlay-card">
+    <h2>W11 · 추론통계 I</h2>
+    <p>이름을 입력하면 퀴즈가 시작됩니다.<br>결과는 자동으로 기록됩니다.</p>
+    <input type="text" id="nameInput" placeholder="이름을 입력하세요" maxlength="20" />
+    <button class="btn" id="startBtn">퀴즈 시작 →</button>
+  </div>
+</div>
+
+<main>
+  <div class="header">
+    <span class="course-tag">2026 1학기 · 한림대학교 · 한수미 교수</span>
+    <h1>추론통계 I — 표본에서 모집단으로</h1>
+    <div class="subtitle">기술 vs 추론 · 가설검정 · p-value · 독립표본 t-test · 검정 선택 · 결과 보고</div>
+    <div class="hello" id="hello"></div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span id="progressLabel">0 / 15 문항</span>
+      <span id="scoreLabel">정답 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="result" id="result">
+    <div style="font-size:14px;color:#6c5ce7;font-weight:700;">퀴즈 완료!</div>
+    <div class="grade-badge" id="gradeBadge"></div>
+    <div class="score-line" id="resultScore"></div>
+    <div id="resultMsg" style="font-size:14px;color:#555;"></div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>
+
+  <div class="footer">© 2026 지역혁신연구방법론 · 미래융합스쿨</div>
+</main>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7fcaTl9AdRyHKda_WP8k6UvVmi0exEHn8_QjkG6tHc6Uk3yA97IqUy2nJqTatHoSrOA/exec";
+const WEEK_ID = "Week11";
+
+const questions = [
+  // ───────── 섹션 1: 표본에서 모집단으로 — 기술 vs 추론 ─────────
+  {
+    section: "1. 표본에서 모집단으로 — 기술통계 vs 추론통계",
+    role: "데이터 분석가", scope: "global",
+    scenario: "글로벌 OTT(스트리밍) 데이터 분석가가 가입자 1,000명 표본의 시청시간을 분석한 뒤, 그 결과로 전 세계 전체 가입자의 경향을 말하려 한다.",
+    text: "다음 중 '추론통계'에 해당하는 작업은?",
+    opts: [
+      "표본 결과를 바탕으로 전체 가입자의 평균 시청시간을 추정한다",
+      "표본 1,000명의 평균 시청시간을 계산한다",
+      "표본의 시청시간 분포를 히스토그램으로 그린다",
+      "가장 많이 본 장르의 비율(%)을 표로 정리한다"
+    ],
+    answer: 0,
+    explain: "기술통계는 '지금 가진 표본을 요약'(평균·분포·비율)하는 것이고, 추론통계는 표본 결과로 '모집단 전체를 일반화·추정'하는 작업이다. 나머지는 모두 기술통계."
+  },
+  {
+    section: "1. 표본에서 모집단으로 — 기술통계 vs 추론통계",
+    role: "정책기획자", scope: "local",
+    scenario: "춘천시 청년정책 기획자가 춘천에 사는 청년 300명을 조사해 '춘천 전체 청년'의 정책 만족도를 파악하려 한다.",
+    text: "이 조사에서 '모집단(population)'에 해당하는 것은?",
+    opts: [
+      "설문에 응답한 청년 300명",
+      "춘천에 거주하는 전체 청년",
+      "조사에 사용한 설문 문항",
+      "조사로 얻은 만족도 평균 점수"
+    ],
+    answer: 1,
+    explain: "모집단은 알고 싶은 대상 '전체'(춘천 전체 청년), 표본은 그중 실제로 조사한 '일부'(300명)다. 평균 점수는 표본에서 계산한 통계량."
+  },
+  {
+    section: "1. 표본에서 모집단으로 — 기술통계 vs 추론통계",
+    role: "마케터", scope: "global",
+    scenario: "글로벌 SPA 패션 브랜드 마케터가 동일한 캠페인 호감도를 서로 다른 1,000명 표본으로 두 번 조사했더니 평균이 3.8점, 3.6점으로 조금 달랐다.",
+    text: "이 0.2점 차이를 가장 적절하게 설명한 것은?",
+    opts: [
+      "둘 중 하나는 분명히 잘못 측정된 조사다",
+      "캠페인 효과가 사라졌다는 직접적 증거다",
+      "표본이 매번 조금씩 다르게 뽑혀서 생기는 자연스러운 변동(표본오차)이다",
+      "모집단의 실제 호감도가 0.2점 줄어든 것이 확인된 것이다"
+    ],
+    answer: 2,
+    explain: "같은 모집단에서 뽑아도 표본은 매번 조금씩 다르다(표본오차·표본의 변동). 동전 10번 던지기에서 5:5가 아니라 6:4가 나오는 것과 같은 원리. 이 우연한 변동을 감안해 '진짜 차이'인지 판단하는 도구가 가설검정이다."
+  },
+
+  // ───────── 섹션 2: 가설검정의 논리 — H0/H1, p-value ─────────
+  {
+    section: "2. 가설검정의 논리 — H0 / H1 / p-value",
+    role: "창업가", scope: "local",
+    scenario: "강원도에서 로컬푸드 구독 서비스를 운영하는 창업가가 '새 포장 디자인이 재구매율을 바꾸는가?'를 검증하려 한다.",
+    text: "귀무가설(H0)로 가장 적절한 것은?",
+    opts: [
+      "새 포장이 재구매율을 높인다",
+      "새 포장이 재구매율을 낮춘다",
+      "새 포장과 기존 포장의 재구매율은 서로 다르다",
+      "새 포장과 기존 포장의 재구매율은 차이가 없다"
+    ],
+    answer: 3,
+    explain: "귀무가설(H0)은 항상 '차이/효과/관계가 없다'는 보수적 기본 입장에서 출발한다. 연구자가 보이고 싶은 '차이가 있다'는 대립가설(H1)이다."
+  },
+  {
+    section: "2. 가설검정의 논리 — H0 / H1 / p-value",
+    role: "콘텐츠 크리에이터", scope: "global",
+    scenario: "글로벌 유튜브 크리에이터가 썸네일 A/B 테스트로 클릭률 차이를 검정했더니 p = 0.03이 나왔다.",
+    text: "p = 0.03의 올바른 해석은?",
+    opts: [
+      "귀무가설이 참이라고 가정했을 때, 관찰된 것 같은 차이가 우연히 나올 확률이 3%다",
+      "대립가설(H1)이 참일 확률이 97%다",
+      "두 썸네일의 클릭률이 정확히 같을 확률이 3%다",
+      "조사가 잘못되었을 확률이 3%다"
+    ],
+    answer: 0,
+    explain: "p값은 'H0가 참이라는 가정 아래, 지금과 같은(또는 더 극단적인) 결과가 우연히 나타날 확률'이다. 'H1이 참일 확률'이나 '조사가 틀릴 확률'이 아니다 — 자주 하는 오해."
+  },
+  {
+    section: "2. 가설검정의 논리 — H0 / H1 / p-value",
+    role: "정책기획자", scope: "local",
+    scenario: "춘천 관광 정책 담당자가 '내국인과 외국인 관광객의 체류일수가 다른가?'를 t-test로 검정해 p = 0.21을 얻었다.",
+    text: "유의수준 α = 0.05에서 올바른 결론은?",
+    opts: [
+      "p가 0.05보다 크므로 대립가설을 채택한다",
+      "유의한 차이가 있다고 보기 어렵다 (H0를 기각하지 못함)",
+      "체류일수에 차이가 전혀 없다고 확정할 수 있다",
+      "표본을 늘리면 반드시 유의해진다"
+    ],
+    answer: 1,
+    explain: "p ≥ 0.05면 H0를 기각하지 못한다 → '유의한 차이를 확인할 증거가 부족하다'. '차이가 전혀 없다'고 단정하는 표현(✗)과는 다르다."
+  },
+  {
+    section: "2. 가설검정의 논리 — H0 / H1 / p-value",
+    role: "데이터 분석가", scope: "global",
+    scenario: "글로벌 SaaS 분석가가 수십만 명 데이터로 두 그룹의 체류시간을 비교했더니 p < 0.001인데 실제 평균 차이는 단 2초였다.",
+    text: "이 결과에 대한 가장 적절한 해석은?",
+    opts: [
+      "p값이 매우 작으므로 실무적으로도 매우 중요한 차이다",
+      "p < 0.001이면 100% 확실한 차이다",
+      "표본이 매우 크면 사소한 차이도 통계적으로 유의해질 수 있어, 효과의 '크기'도 함께 봐야 한다",
+      "유의하지 않으므로 무시해도 된다"
+    ],
+    answer: 2,
+    explain: "표본이 아주 크면 아주 작은 차이도 p<0.05가 된다(통계적 유의성 ≠ 실무적 중요성). 그래서 p값만이 아니라 '평균 차이의 크기'(효과크기)도 함께 봐야 한다."
+  },
+
+  // ───────── 섹션 3: t-test와 올바른 검정 선택 ─────────
+  {
+    section: "3. t-test와 올바른 검정 선택",
+    role: "UX 디자이너", scope: "global",
+    scenario: "글로벌 앱 UX 디자이너가 '구버전 vs 신버전 화면에서 과업 완료 시간(초)이 다른가?'를 서로 다른 두 사용자 집단으로 비교하려 한다.",
+    text: "가장 적절한 분석 방법은?",
+    opts: [
+      "카이제곱 검정",
+      "상관분석",
+      "빈도분석",
+      "독립표본 t-test"
+    ],
+    answer: 3,
+    explain: "서로 다른 두 집단 + 종속변수가 연속형(시간) → 독립표본 t-test. 같은 사람을 전·후로 비교했다면 대응표본 t-test."
+  },
+  {
+    section: "3. t-test와 올바른 검정 선택",
+    role: "마케터", scope: "local",
+    scenario: "강원 관광 마케터가 '성별에 따라 선호 여행 유형(휴양 / 액티비티 / 맛집)의 분포가 다른가?'를 보려 한다.",
+    text: "두 변수(성별, 선호 유형)가 모두 범주형일 때 적절한 검정은?",
+    opts: [
+      "독립표본 t-test",
+      "카이제곱(χ²) 검정",
+      "대응표본 t-test",
+      "회귀분석"
+    ],
+    answer: 1,
+    explain: "범주형 × 범주형의 빈도·비율 차이는 카이제곱 검정. t-test는 '연속형 종속변수'의 평균 비교용이라 여기선 부적절."
+  },
+  {
+    section: "3. t-test와 올바른 검정 선택",
+    role: "데이터 분석가", scope: "global",
+    scenario: "분석가가 두 집단 점수에 대해 Shapiro-Wilk 정규성 검정을 했더니 한 집단에서 p = 0.01이 나왔다.",
+    text: "올바른 해석과 다음 조치는?",
+    opts: [
+      "정규분포라고 보기 어렵다 → Mann-Whitney U 같은 비모수 검정을 고려한다",
+      "정규성을 만족한다 → 그대로 t-test를 쓴다",
+      "p가 작으니 평균 차이가 크다는 뜻이다",
+      "등분산 가정이 위배되었다는 의미다"
+    ],
+    answer: 0,
+    explain: "Shapiro-Wilk의 H0='정규분포를 따른다'. p<0.05면 H0 기각 → '정규성을 보기 어렵다'. 이때 평균 대신 순위로 비교하는 Mann-Whitney U로 우회. (단 n≥30이면 중심극한정리로 비교적 견고)"
+  },
+  {
+    section: "3. t-test와 올바른 검정 선택",
+    role: "정책기획자", scope: "local",
+    scenario: "춘천 소상공인 지원 담당자가 두 상권의 월매출을 비교하려고 Levene 등분산 검정을 했더니 p = 0.02가 나왔다.",
+    text: "어떤 t-test를 쓰는 것이 적절한가?",
+    opts: [
+      "등분산 가정 t-test(Student) — 두 집단 분산이 같다고 보고",
+      "대응표본 t-test",
+      "Welch's t-test — 두 집단 분산이 다를 때도 정확하다",
+      "카이제곱 검정"
+    ],
+    answer: 2,
+    explain: "Levene의 H0='두 집단 분산이 같다'. p<0.05면 등분산 가정이 깨진 것 → 분산 차이에 강한 Welch's t-test 사용. 등분산이 충족(p≥0.05)되면 Student t-test."
+  },
+  {
+    section: "3. t-test와 올바른 검정 선택",
+    role: "창업가", scope: "global",
+    scenario: "글로벌 앱 창업가가 두 국가 사용자의 5점 만족도(서열형)를 비교하는데, 분포가 한쪽으로 심하게 치우쳐 정규성을 만족하지 못한다.",
+    text: "가장 적절한 검정과 그 특징은?",
+    opts: [
+      "t-test를 그대로 쓰면 된다 — 평균을 비교",
+      "카이제곱 검정 — 평균을 비교",
+      "상관분석 — 인과관계를 본다",
+      "Mann-Whitney U 검정 — 평균 대신 순위(분포 위치)를 비교한다"
+    ],
+    answer: 3,
+    explain: "비정규 + 독립표본이면 Mann-Whitney U. 평균이 아니라 순위(중앙값·분포 위치)를 비교하므로 이상치·치우침에 강하다. 인문·사회 데이터엔 비정규/서열형이 흔하다."
+  },
+
+  // ───────── 섹션 4: 결과 해석과 보고 ─────────
+  {
+    section: "4. 결과 해석과 보고",
+    role: "콘텐츠 크리에이터", scope: "global",
+    scenario: "크리에이터가 두 업로드 시간대의 평균 조회수를 비교했더니 t = 1.1, p = 0.28이었다.",
+    text: "결과를 가장 정확하게 보고한 문장은?",
+    opts: [
+      "유의수준 0.05에서 두 시간대 조회수의 유의한 차이를 확인할 증거가 부족하다",
+      "두 시간대의 조회수에는 차이가 전혀 없다",
+      "p값이 0.28이므로 대립가설이 옳다",
+      "두 시간대 조회수는 97% 확률로 같다"
+    ],
+    answer: 0,
+    explain: "비유의 결과는 '차이가 없다'(✗)가 아니라 '유의한 차이를 확인할 증거가 부족하다'(✓)로 보고한다. 유의하지 않은 결과도 '표본에서 차이가 크지 않다'는 중요한 정보."
+  },
+  {
+    section: "4. 결과 해석과 보고",
+    role: "데이터 분석가", scope: "local",
+    scenario: "강원 관광 데이터 분석가가 평일/주말 방문객 만족도를 비교해 평일 M=3.4, 주말 M=3.9, t=3.2, p=0.002를 얻었다.",
+    text: "보고 문장으로 가장 적절한 것은? (APA식)",
+    opts: [
+      "p=0.002이므로 두 집단은 차이가 없다",
+      "주말 만족도(M=3.9)가 평일(M=3.4)보다 통계적으로 유의하게 높았다 (t=3.2, p=.002)",
+      "주말이 평일보다 무조건 더 좋다",
+      "p=0.002는 두 집단의 분산이 같다는 의미다"
+    ],
+    answer: 1,
+    explain: "유의 결과 보고에는 각 집단 평균(M), 검정통계량(t), p값, 그리고 방향(어느 쪽이 높은지)을 함께 적는다. '무조건'처럼 단정·과장하는 표현은 피한다."
+  },
+  {
+    section: "4. 결과 해석과 보고",
+    role: "UX 디자이너", scope: "global",
+    scenario: "글로벌 서비스 UX 디자이너가 '다크모드 사용자일수록 체류시간이 길다'는 유의한 결과(p<0.05)를 얻고 '다크모드가 체류시간을 늘린다'고 결론지으려 한다.",
+    text: "이 결론에서 가장 주의할 점은?",
+    opts: [
+      "p < 0.05면 인과관계가 증명된 것이다",
+      "표본이 크면 인과는 자동으로 성립한다",
+      "집단 비교/상관에서 유의해도 곧바로 인과로 단정할 수 없다 (제3변수·자기선택 가능성)",
+      "유의하므로 추가 검토는 필요 없다"
+    ],
+    answer: 2,
+    explain: "유의한 차이/상관이 있어도 '상관 ≠ 인과'. 다크모드를 고르는 사람의 성향(헤비유저 등) 같은 제3변수가 원인일 수 있다. 인과는 통제된 실험 설계가 있어야 조심스럽게 말할 수 있다."
+  }
+];
+
+let studentName = "";
+let current = 0;
+let correctCount = 0;
+let answered = 0;
+const selectedAnswers = new Array(questions.length).fill(null);
+const letters = ["A", "B", "C", "D"];
+
+// ── 시작 ──
+document.getElementById("startBtn").addEventListener("click", startQuiz);
+document.getElementById("nameInput").addEventListener("keydown", function(e){
+  if (e.key === "Enter") startQuiz();
+});
+
+function startQuiz() {
+  const v = document.getElementById("nameInput").value.trim();
+  if (!v) { document.getElementById("nameInput").focus(); return; }
+  studentName = v;
+  document.getElementById("nameOverlay").classList.add("hidden");
+  document.getElementById("hello").textContent = studentName + "님, 화이팅! 한 문항씩 풀어보세요.";
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const area = document.getElementById("quizArea");
+  let html = "";
+  let lastSection = "";
+  questions.forEach((q, i) => {
+    if (q.section !== lastSection) {
+      html += `<div class="section-title">${q.section}</div>`;
+      lastSection = q.section;
+    }
+    const scopeTag = q.scope === "local"
+      ? `<span class="tag local">📍 강원·춘천</span>`
+      : `<span class="tag global">🌐 글로벌</span>`;
+    let optsHtml = "";
+    q.opts.forEach((o, j) => {
+      optsHtml += `<div class="opt" data-q="${i}" data-o="${j}">
+        <span class="letter">${letters[j]}</span><span>${o}</span></div>`;
+    });
+    html += `<div class="q-card" id="card-${i}">
+      <div class="q-meta">
+        <span class="tag role">💼 ${q.role}</span>${scopeTag}
+      </div>
+      <div class="q-scenario">${q.scenario}</div>
+      <div class="q-text"><span class="q-num">Q${i+1}.</span>${q.text}</div>
+      <div class="opts">${optsHtml}</div>
+      <div class="explain" id="explain-${i}"><b>해설</b> · ${q.explain}</div>
+    </div>`;
+  });
+  area.innerHTML = html;
+  area.querySelectorAll(".opt").forEach(el => el.addEventListener("click", onSelect));
+  updateProgress();
+}
+
+function onSelect(e) {
+  const el = e.currentTarget;
+  const qi = +el.dataset.q;
+  const oi = +el.dataset.o;
+  if (selectedAnswers[qi] !== null) return; // 이미 답함
+
+  selectedAnswers[qi] = oi;
+  answered++;
+  const correct = questions[qi].answer;
+  const card = document.getElementById("card-" + qi);
+  const opts = card.querySelectorAll(".opt");
+
+  opts.forEach((o, j) => {
+    o.classList.add("disabled");
+    if (j === correct) o.classList.add("correct");
+    if (j === oi && oi !== correct) o.classList.add("wrong");
+  });
+
+  if (oi === correct) correctCount++;
+  document.getElementById("explain-" + qi).classList.add("show");
+  updateProgress();
+
+  if (answered === questions.length) showResult();
+}
+
+function updateProgress() {
+  const pct = Math.round((answered / questions.length) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = answered + " / " + questions.length + " 문항";
+  document.getElementById("scoreLabel").textContent = "정답 " + correctCount + "개";
+}
+
+function showResult() {
+  const pct = Math.round((correctCount / questions.length) * 100);
+  let grade, color, msg;
+  if (pct >= 90)      { grade = "S"; color = "#6c5ce7"; msg = "완벽합니다! 추론통계의 논리를 정확히 잡았어요."; }
+  else if (pct >= 80) { grade = "A"; color = "#1b9e5a"; msg = "훌륭해요! 검정 선택과 해석을 잘 이해하고 있습니다."; }
+  else if (pct >= 70) { grade = "B"; color = "#2980b9"; msg = "좋아요. 헷갈린 부분의 해설을 한 번 더 읽어보세요."; }
+  else if (pct >= 60) { grade = "C"; color = "#e67e22"; msg = "기본은 잡았어요. 가설검정 6단계를 복습해 봅시다."; }
+  else                { grade = "복습"; color = "#e74c3c"; msg = "괜찮아요! 강의 슬라이드와 해설을 다시 보고 재도전해요."; }
+
+  const gradeText = (grade === "복습") ? "복습" : grade + "등급";
+  const r = document.getElementById("result");
+  document.getElementById("gradeBadge").textContent = grade;
+  document.getElementById("gradeBadge").style.color = color;
+  document.getElementById("resultScore").textContent =
+    questions.length + "문항 중 " + correctCount + "개 정답 (" + pct + "%)";
+  document.getElementById("resultMsg").textContent = msg;
+  r.classList.add("show");
+  r.scrollIntoView({ behavior: "smooth" });
+
+  submitResult(pct, gradeText);
+}
+
+function submitResult(pct, grade) {
+  const s = document.getElementById("saveStatus");
+  s.className = "save-status saving";
+  s.textContent = "⏳ 결과 저장 중...";
+
+  const sel = selectedAnswers.join(",");
+  const cor = questions.map(q => q.answer).join(",");
+  const qtexts = questions.map(q => q.text.replace(/,/g, " ").substring(0, 30)).join("|");
+  const optexts = questions.map((q, i) => {
+    const idx = selectedAnswers[i];
+    return (idx !== null && idx >= 0) ? q.opts[idx].replace(/,/g, " ").substring(0, 20) : "-";
+  }).join("|");
+
+  const params = "?name="    + encodeURIComponent(studentName)
+               + "&week="    + encodeURIComponent(WEEK_ID)
+               + "&correct=" + correctCount
+               + "&total="   + questions.length
+               + "&pct="     + pct
+               + "&grade="   + encodeURIComponent(grade)
+               + "&sel="     + encodeURIComponent(sel)
+               + "&cor="     + encodeURIComponent(cor)
+               + "&qtexts="  + encodeURIComponent(qtexts)
+               + "&optexts=" + encodeURIComponent(optexts);
+
+  fetch(SCRIPT_URL + params, { method: "GET", mode: "no-cors" })
+    .then(() => {
+      s.className = "save-status saved";
+      s.textContent = "✅ " + studentName + "님의 결과가 저장되었습니다.";
+    })
+    .catch(() => {
+      s.className = "save-status save-err";
+      s.textContent = "❌ 저장 실패. 결과를 스크린샷으로 저장해 주세요.";
+    });
+}
+</script>
+</body>
+</html>
